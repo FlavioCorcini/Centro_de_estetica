@@ -1,4 +1,4 @@
-package com.centroestetica.model;
+package com.cefet.centro_de_estetica.entity;
 
 import jakarta.persistence.*;
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.cefet.centro_de_estetica.entity;
 
 
+import com.cefet.centro_de_estetica.enums.StatusUsuario;
 import com.cefet.centro_de_estetica.enums.TipoUsuario;
 
 import jakarta.persistence.Column;
@@ -10,24 +11,95 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "tb_usuario")
-public class Usuario {
+public abstract class Usuario {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idUsuario")
     private Long id;
     
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String nome;
     
-    @Column(nullable = false, unique = true, length = 11)
-    private String cpf;
+    @Column(nullable = false, length = 11) //ex(contando apenas os números):(31) 91111-2222
+    private String telefone;
+    
+    @Column(nullable = false, unique = true)
+    private String email;
+    
+    @Column(nullable = false)
+    private String senha;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusUsuario statusUsuario;
     
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipo;
     
+    //GETs & SETs
+
+    public Long getId() {
+    	return id;
+    }
+    
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	public String getTelefone() {
+		return telefone;
+	}
+	
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+	
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+	
+	public StatusUsuario getStatusUsuario() {
+		return statusUsuario;
+	}
+
+	public void setStatusUsuario(StatusUsuario statusUsuario) {
+		this.statusUsuario = statusUsuario;
+	}
+
+	public TipoUsuario getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoUsuario tipo) {
+		this.tipo = tipo;
+	}
+
+
+    
+	
 }
