@@ -25,7 +25,7 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String nome;
     
-    @Column(nullable = false, length = 11) //ex(contando apenas os números):(31) 91111-2222
+    @Column(nullable = false, length = 11) 
     private String telefone;
     
     @Column(nullable = false, unique = true)
@@ -42,7 +42,6 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipo;
     
-    //GETs & SETs
     public Long getId() {
     	return id;
     }

@@ -1,7 +1,14 @@
 package com.cefet.centro_de_estetica.entity;
-
-import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 
 @Entity
@@ -11,21 +18,21 @@ public class Area {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idArea;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 45)
     private String nome; 
 
-    @Column(nullable = false)
+    @Column(nullable = false, length= 100)
     private String descricao; 
     
+
+    
     @OneToMany(mappedBy = "area") 
+    @JsonIgnore
     private List<Servico> servicos;
 
-    //
     public Area() {
     }
 
-    //
-    
     public Long getIdArea() {
         return idArea;
     }
