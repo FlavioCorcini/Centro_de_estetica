@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 import com.cefet.centro_de_estetica.entity.Servico;
 
-public class ServicoDTO {
+public class ServicoResponseDTO {
 
     private Long id;
     private String nome;
@@ -15,10 +15,10 @@ public class ServicoDTO {
     private Long idArea;     
     private String nomeArea; 
 
-    public ServicoDTO() {
+    public ServicoResponseDTO() {
     }
 
-    public ServicoDTO(Servico servico) {
+    public ServicoResponseDTO(Servico servico) {
         this.id = servico.getId();
         this.nome = servico.getNome();
         this.descricao = servico.getDescricao();

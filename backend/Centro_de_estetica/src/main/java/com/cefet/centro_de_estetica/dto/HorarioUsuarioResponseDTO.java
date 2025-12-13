@@ -4,7 +4,7 @@ import java.time.LocalTime;
 
 import com.cefet.centro_de_estetica.entity.HorarioUsuario;
 
-public class HorarioUsuarioDTO {
+public class HorarioUsuarioResponseDTO {
 
     private Long id;
     private Integer diaSemana;
@@ -12,10 +12,10 @@ public class HorarioUsuarioDTO {
     private Long idFuncionario;
     private String nomeFuncionario;
 
-    public HorarioUsuarioDTO() {
+    public HorarioUsuarioResponseDTO() {
     }
 
-    public HorarioUsuarioDTO(HorarioUsuario horarioUsuario) {
+    public HorarioUsuarioResponseDTO(HorarioUsuario horarioUsuario) {
         this.id = horarioUsuario.getId();
         this.diaSemana = horarioUsuario.getDiaSemana();
         this.horario = horarioUsuario.getHorario();

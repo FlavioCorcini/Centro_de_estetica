@@ -2,16 +2,16 @@ package com.cefet.centro_de_estetica.dto;
 
 import com.cefet.centro_de_estetica.entity.Area;
 
-public class AreaDTO {
+public class AreaResponseDTO {
 
     private Long id;
     private String nome;
     private String descricao;
 
-    public AreaDTO() {
+    public AreaResponseDTO() {
     }
 
-    public AreaDTO(Area area) {
+    public AreaResponseDTO(Area area) {
         this.id = area.getIdArea();
         this.nome = area.getNome();
         this.descricao = area.getDescricao();
