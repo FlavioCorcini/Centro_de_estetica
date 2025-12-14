@@ -6,6 +6,7 @@ import java.util.List;
 import com.cefet.centro_de_estetica.enums.StatusUsuario;
 import com.cefet.centro_de_estetica.enums.TipoUsuario;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 
@@ -55,7 +57,9 @@ public class Usuario {
         )
     private List<Servico> servicos;
     
-    //
+    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL) // 'funcionario' é o nome do atributo lá na classe HorarioUsuario
+    private List<HorarioUsuario> horarios;
+    
     
     //GETs & SETs
     public Long getId() {
@@ -120,6 +124,15 @@ public class Usuario {
 
 	public void setServicos(List<Servico> servicos) {
 		this.servicos = servicos;
+	}
+
+	public List<HorarioUsuario> getHorarios() {
+		return horarios;
+	}
+
+	public void setHorarios(List<HorarioUsuario> horarios) {
+		this.horarios = horarios;
 	}   
+	
 	
 }

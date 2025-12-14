@@ -3,11 +3,12 @@ package com.cefet.centro_de_estetica.dto;
 import java.time.LocalTime;
 
 import com.cefet.centro_de_estetica.entity.HorarioUsuario;
+import com.cefet.centro_de_estetica.enums.DiaDaSemana;
 
 public class HorarioUsuarioResponseDTO {
 
     private Long id;
-    private Integer diaSemana;
+    private DiaDaSemana diaSemana;
     private LocalTime horario;
     private Long idFuncionario;
     private String nomeFuncionario;
@@ -23,7 +24,7 @@ public class HorarioUsuarioResponseDTO {
         this.nomeFuncionario = horarioUsuario.getFuncionario().getNome();
     }
 
-    public HorarioUsuarioResponseDTO(Long id, Integer diaSemana, LocalTime horario, Long idFuncionario, String nomeFuncionario) {
+    public HorarioUsuarioResponseDTO(Long id, DiaDaSemana diaSemana, LocalTime horario, Long idFuncionario, String nomeFuncionario) {
         this.id = id;
         this.diaSemana = diaSemana;
         this.horario = horario;
@@ -40,11 +41,11 @@ public class HorarioUsuarioResponseDTO {
         this.id = id; 
     }
 
-    public Integer getDiaSemana() { 
+    public DiaDaSemana getDiaSemana() { 
         return diaSemana; 
     }
 
-    public void setDiaSemana(Integer diaSemana) { 
+    public void setDiaSemana(DiaDaSemana diaSemana) { 
         this.diaSemana = diaSemana; 
     }
 

@@ -14,7 +14,8 @@ public class AreaMapper {
         return new AreaResponseDTO(
             area.getIdArea(), 
             area.getNome(),
-            area.getDescricao()
+            area.getDescricao(),
+            area.getServicos()
         );
     }
 
@@ -24,7 +25,6 @@ public class AreaMapper {
         Area area = new Area();
         area.setNome(dto.nome());
         area.setDescricao(dto.descricao());
-        
         return area;
     }
 }

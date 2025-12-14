@@ -2,8 +2,12 @@ package com.cefet.centro_de_estetica.entity;
 
 import java.time.LocalTime;
 
+import com.cefet.centro_de_estetica.enums.DiaDaSemana;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,8 +23,9 @@ public class HorarioUsuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Integer diaSemana; 
+    @Column(nullable = false, length = 3)
+    @Enumerated(EnumType.STRING)
+    private DiaDaSemana diaSemana; 
     
     @Column(nullable = false)
     private LocalTime horario; 
@@ -35,8 +40,8 @@ public class HorarioUsuario {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Integer getDiaSemana() { return diaSemana; }
-    public void setDiaSemana(Integer diaSemana) { this.diaSemana = diaSemana; }
+    public DiaDaSemana getDiaSemana() { return diaSemana; }
+    public void setDiaSemana(DiaDaSemana diaSemana) { this.diaSemana = diaSemana; }
 
     public LocalTime getHorario() { return horario; }
     public void setHorario(LocalTime horario) { this.horario = horario; }

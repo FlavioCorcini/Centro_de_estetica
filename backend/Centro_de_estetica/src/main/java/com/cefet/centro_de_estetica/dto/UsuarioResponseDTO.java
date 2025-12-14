@@ -2,6 +2,7 @@ package com.cefet.centro_de_estetica.dto;
 
 import java.util.List;
 
+import com.cefet.centro_de_estetica.entity.HorarioUsuario;
 import com.cefet.centro_de_estetica.entity.Servico;
 import com.cefet.centro_de_estetica.entity.Usuario;
 import com.cefet.centro_de_estetica.enums.StatusUsuario;
@@ -16,6 +17,7 @@ public class UsuarioResponseDTO {
 	private StatusUsuario statusUsuario;
 	private TipoUsuario tipo;
 	private List<Servico> servicos;
+	private List<HorarioUsuario> horarios;
 	
 	// Construtor que converte Entidade -> DTO 
 	public UsuarioResponseDTO() {
@@ -29,10 +31,11 @@ public class UsuarioResponseDTO {
         this.statusUsuario = usuario.getStatusUsuario();
         this.tipo = usuario.getTipo();
         this.servicos = usuario.getServicos(); 
+        this.horarios = usuario.getHorarios();
     }
     
     public UsuarioResponseDTO(Long id, String nome, String telefone, String email, 
-    							 StatusUsuario statusUsuario, TipoUsuario tipo, List<Servico> servicos) {
+    							 StatusUsuario statusUsuario, TipoUsuario tipo, List<Servico> servicos, List<HorarioUsuario> horarios) {
     	this.id = id;
     	this.nome = nome;
     	this.telefone = telefone;
@@ -40,6 +43,7 @@ public class UsuarioResponseDTO {
     	this.statusUsuario = statusUsuario;
     	this.tipo = tipo;
     	this.servicos = servicos; 
+    	this.horarios = horarios;
     }
 	
 	//GETs & SETs
@@ -85,6 +89,14 @@ public class UsuarioResponseDTO {
 	}
 	public void setServicos(List<Servico> servicos) {
 		this.servicos = servicos;
+	}
+
+	public List<HorarioUsuario> getHorarios() {
+		return horarios;
+	}
+
+	public void setHorarios(List<HorarioUsuario> horarios) {
+		this.horarios = horarios;
 	}
 	
 	

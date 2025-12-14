@@ -2,6 +2,7 @@ package com.cefet.centro_de_estetica.dto;
 
 import java.util.List;
 
+import com.cefet.centro_de_estetica.entity.HorarioUsuario;
 import com.cefet.centro_de_estetica.enums.StatusUsuario;
 import com.cefet.centro_de_estetica.enums.TipoUsuario;
 
@@ -13,7 +14,8 @@ public record UsuarioRequestDTO (
 	 String senha,
 	 StatusUsuario statusUsuario,
 	 TipoUsuario tipo,
-	 List<Long> servicosIDs
+	 List<Long> servicosIDs,
+	 List<HorarioUsuario> horarios
 ){}
 
 
