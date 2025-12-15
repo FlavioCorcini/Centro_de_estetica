@@ -17,20 +17,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "horario_usuario")
+@Table(name = "tb_horario_usuario")
 public class HorarioUsuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 3)
+    @Column(name = "dia_semana",nullable = false, length = 3)
     @Enumerated(EnumType.STRING)
     private DiaDaSemana diaSemana; 
     
-    @Column(nullable = false)
+    @Column(name = "horario_inicio",nullable = false)
     private LocalTime horarioInicio;
-    @Column(nullable = false)
+    
+    @Column(name = "horario_fim",nullable = false)
     private LocalTime horarioFim;
 
     @ManyToOne

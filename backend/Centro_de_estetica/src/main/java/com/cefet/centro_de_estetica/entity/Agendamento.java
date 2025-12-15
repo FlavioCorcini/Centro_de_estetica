@@ -22,19 +22,20 @@ public class Agendamento {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idUsuario")
     private Long id;
 	
 	// Guarda a data E a hora juntas (ex: 2025-12-25T14:30:00)
-    @Column(nullable = false)
+    @Column(name = "data_hora",nullable = false)
     private LocalDateTime dataHora;
     
-    @Column(nullable = false)
+    @Column(name = "valor_cobrado",nullable = false)
     private BigDecimal valorCobrado;
     
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusAgendamento status;
+    
+    private String observacoes;
 	
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = false)
@@ -104,6 +105,14 @@ public class Agendamento {
 
 	public void setServico(Servico servico) {
 		this.servico = servico;
+	}
+
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
 	}
     
 }

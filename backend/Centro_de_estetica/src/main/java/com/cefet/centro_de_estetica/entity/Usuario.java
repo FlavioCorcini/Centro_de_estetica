@@ -26,7 +26,7 @@ public class Usuario {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idUsuario")
+	@Column(name = "id_usuario")
     private Long id;
     
     @Column(nullable = false, length = 100)
@@ -41,7 +41,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
     
-    @Column(nullable = false)
+    @Column(name = "status_usuario",nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusUsuario statusUsuario;
     

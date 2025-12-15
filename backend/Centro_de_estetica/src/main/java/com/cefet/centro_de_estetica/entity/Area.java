@@ -9,19 +9,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 
 @Entity
+@Table(name = "tb_area")
 public class Area {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false, length = 45)
+    @Column(name = "nome",nullable = false, length = 45)
     private String nome; 
 
-    @Column(nullable = false, length= 100)
+    @Column(name = "descricao",nullable = false, length= 100)
     private String descricao; 
     
     @OneToMany(mappedBy = "area") 
