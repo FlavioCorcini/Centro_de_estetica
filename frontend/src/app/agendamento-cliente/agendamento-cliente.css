@@ -1,0 +1,34 @@
+.container-agendamento {
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+
+.grid-areas {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.card-area {
+  background-color: #6a1b9a;
+  color: white;
+  width: 200px;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: 2px solid #8e24aa;
+}
+
+.card-area:hover {
+  transform: scale(1.05);
+  background-color: #7b1fa2;
+}
+
+.aviso {
+  color: #ccc;
+  margin-top: 20px;
+}
