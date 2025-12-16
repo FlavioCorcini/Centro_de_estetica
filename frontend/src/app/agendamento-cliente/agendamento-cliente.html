@@ -1,0 +1,15 @@
+<div class="container-agendamento">
+  <h2>Escolha uma Área</h2>
+  <p>Selecione a categoria do serviço que deseja agendar:</p>
+
+  <div class="grid-areas">
+    <div *ngFor="let area of areas" class="card-area" (click)="selecionarArea(area)">
+      <h3>{{ area.nome }}</h3>
+      <p>{{ area.descricao }}</p>
+    </div>
+  </div>
+  
+  <div *ngIf="areas.length === 0" class="aviso">
+    <p>Nenhuma área encontrada no sistema.</p>
+  </div>
+</div>
