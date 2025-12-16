@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth';
 import { Router } from '@angular/router';
+import { NgxMaskDirective } from 'ngx-mask'; 
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -34,7 +37,7 @@ export class LoginComponent {
     // 2. Formulário de Cadastro (Nome, Email, WhatsApp, Senha)
     this.cadastroForm = this.fb.group({
       nome: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', Validators.required, Validators.email],      
       telefone: ['', Validators.required], // Campo WhatsApp
       senha: ['', [Validators.required, Validators.minLength(4)]]
     });
@@ -49,6 +52,8 @@ export class LoginComponent {
   toggleSenha() {
     this.mostrarSenha = !this.mostrarSenha;
   }
+
+  
 
   onSubmit() {
     // LÓGICA DE LOGIN
@@ -91,4 +96,5 @@ export class LoginComponent {
       }
     }
   }
+
 }

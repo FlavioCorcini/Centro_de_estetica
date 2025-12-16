@@ -64,6 +64,14 @@ public class UsuarioService {
 	public List<UsuarioResponseDTO> listarTodos() {
 		return repository.findAll().stream().map(mapper::toResponseDTO).collect(Collectors.toList());
 	}
+	
+	public List<UsuarioResponseDTO> listarProfissionaisPorServico(Long idServico) {
+	    List<Usuario> usuarios = repository.findByServicos_Id(idServico); 
+	    
+	    return usuarios.stream()
+	            .map(mapper::toResponseDTO)
+	            .collect(Collectors.toList()); 
+	}
 
 	public Optional<UsuarioResponseDTO> buscarPorId(Long id) {
 		return repository.findById(id).map(mapper::toResponseDTO);
@@ -71,6 +79,10 @@ public class UsuarioService {
 
 	public Optional<UsuarioResponseDTO> buscarPorEmail(String email) {
 		return repository.findByEmail(email).map(mapper::toResponseDTO);
+	}
+	
+	public boolean verificarSeEmailExiste(String email) {
+		return repository.existsByEmail(email);
 	}
 
 	public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {

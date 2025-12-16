@@ -13,7 +13,6 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  // Note que trocamos 'any' por 'LoginRequestDTO'
   login(credenciais: LoginRequestDTO): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login`, credenciais);
   }

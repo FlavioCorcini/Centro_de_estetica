@@ -44,6 +44,17 @@ public class UsuarioController {
         List<UsuarioResponseDTO> lista = service.listarTodos();
         return ResponseEntity.ok(lista);
     }
+    
+    @GetMapping("/servico/{idServico}")
+    public ResponseEntity<List<UsuarioResponseDTO>> listarPorServico(@PathVariable Long idServico) {
+        List<UsuarioResponseDTO> profissionais = service.listarProfissionaisPorServico(idServico);
+        
+        if (profissionais.isEmpty()) {
+            return ResponseEntity.noContent().build(); 
+        }
+        
+        return ResponseEntity.ok(profissionais);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
@@ -57,6 +68,12 @@ public class UsuarioController {
         return service.buscarPorEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/verificar-email")
+    public ResponseEntity<Boolean> verificarEmail(@RequestParam String email) {
+        boolean existe = service.verificarSeEmailExiste(email); // Ou chame o repository direto se preferir
+        return ResponseEntity.ok(existe);
     }
 
     
