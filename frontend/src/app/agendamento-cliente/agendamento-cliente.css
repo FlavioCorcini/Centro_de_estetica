@@ -1,7 +1,29 @@
 .container-agendamento {
   padding: 20px;
-  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
   color: white;
+  font-family: sans-serif;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+.stepper span.active {
+  color: #fff;
+  font-weight: bold;
+}
+.line {
+  flex: 1;
+  height: 1px;
+  background: #555;
+  margin: 0 10px;
+  max-width: 50px;
 }
 
 .grid-areas {
@@ -9,26 +31,78 @@
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
-  margin-top: 30px;
-}
-
-.card-area {
-  background-color: #6a1b9a;
-  color: white;
-  width: 200px;
-  padding: 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  border: 2px solid #8e24aa;
-}
-
-.card-area:hover {
-  transform: scale(1.05);
-  background-color: #7b1fa2;
-}
-
-.aviso {
-  color: #ccc;
   margin-top: 20px;
+}
+.card-area {
+  background-color: #fff;
+  color: #333;
+  width: 180px;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #ddd;
+}
+.card-area:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+  border-color: #000;
+}
+.card-area .icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.grid-servicos {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+.card-servico {
+  background-color: #1e1e1e; 
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.card-servico:hover {
+  background-color: #2a2a2a;
+  border-color: #fff;
+}
+.servico-info h3 {
+  margin: 0 0 5px 0;
+  color: #fff;
+}
+.servico-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+.servico-preco {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #fff;
+  background: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.btn-voltar {
+  background: none;
+  border: 1px solid #ccc;
+  color: white;
+  padding: 5px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+.btn-voltar:hover {
+  background: #fff;
+  color: #000;
 }

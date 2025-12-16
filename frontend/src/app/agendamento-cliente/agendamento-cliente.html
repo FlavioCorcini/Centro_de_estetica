@@ -1,15 +1,50 @@
 <div class="container-agendamento">
-  <h2>Escolha uma Área</h2>
-  <p>Selecione a categoria do serviço que deseja agendar:</p>
+  
+  <div class="stepper">
+    <span [class.active]="passoAtual >= 1">1. Categoria</span>
+    <div class="line"></div>
+    <span [class.active]="passoAtual >= 2">2. Serviço</span>
+    <div class="line"></div>
+    <span [class.active]="passoAtual >= 3">3. Profissional</span>
+    <div class="line"></div>
+    <span [class.active]="passoAtual >= 4">4. Data</span>
+  </div>
 
-  <div class="grid-areas">
-    <div *ngFor="let area of areas" class="card-area" (click)="selecionarArea(area)">
-      <h3>{{ area.nome }}</h3>
-      <p>{{ area.descricao }}</p>
+  <div *ngIf="passoAtual === 1">
+    <h2>Escolha a Categoria</h2>
+    <p>Selecione o tipo de serviço desejado:</p>
+
+    <div class="grid-areas">
+      <div *ngFor="let area of areas" class="card-area" (click)="selecionarArea(area)">
+        <div class="icon">✨</div> 
+        <h3>{{ area.nome }}</h3>
+        <p>{{ area.descricao }}</p>
+      </div>
     </div>
   </div>
-  
-  <div *ngIf="areas.length === 0" class="aviso">
-    <p>Nenhuma área encontrada no sistema.</p>
+
+  <div *ngIf="passoAtual === 2">
+    <button class="btn-voltar" (click)="voltar()">⬅ Voltar</button>
+    
+    <h2>Escolha o Serviço</h2>
+    <p>Categoria: <strong>{{ areaSelecionada?.nome }}</strong></p>
+
+    <div class="grid-servicos">
+      <div *ngFor="let servico of servicos" class="card-servico" (click)="selecionarServico(servico)">
+        <div class="servico-info">
+            <h3>{{ servico.nome }}</h3>
+            <p>{{ servico.descricao }}</p>
+            <small>⏱ {{ servico.tempoAtendimento }}</small>
+        </div>
+        <div class="servico-preco">
+            R$ {{ servico.valor }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="servicos.length === 0" class="aviso">
+        <p>Nenhum serviço cadastrado nesta área ainda.</p>
+    </div>
   </div>
+
 </div>
