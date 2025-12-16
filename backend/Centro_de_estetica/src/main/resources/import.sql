@@ -28,7 +28,7 @@ INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario
 INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario, tipo) VALUES (5, 'Edna Corcini', 'edna@gmail.com', '1234', '31988880001', 'ATIVO', 'CLIENTE');
 INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario, tipo) VALUES (6, 'Keila', 'keila@gmail.com', '1234', '31988880002', 'ATIVO', 'CLIENTE');
 INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario, tipo) VALUES (7, 'Maria de Lourdes', 'lourdes@gmail.com', '1234', '31988880003', 'ATIVO', 'CLIENTE');
-INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario, tipo) VALUES (8, 'Jamaica', 'jamaica@gmail.com', '1234', '31988880004', 'ATIVO', 'CLIENTE');
+INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario, tipo) VALUES (8, 'Vitor Oliveira', 'Vitor02@gmail.com', '1234', '31988880004', 'ATIVO', 'CLIENTE');
 INSERT INTO tb_usuario (id_usuario, nome, email, senha, telefone, status_usuario, tipo) VALUES (9, 'Felipe', 'felipe@gmail.com', '1234', '31988880005', 'ATIVO', 'CLIENTE');
 
 -- 4. VINCULOS DE SERVIÇO (Agora seguro pois forçamos os IDs acima)
