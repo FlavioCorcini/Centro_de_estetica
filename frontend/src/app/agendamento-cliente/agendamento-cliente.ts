@@ -6,8 +6,8 @@ import { AgendamentoService } from '../services/agendamento.service';
   selector: 'app-agendamento-cliente',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './agendamento-cliente.component.html',
-  styleUrls: ['./agendamento-cliente.component.css']
+  templateUrl: './agendamento-cliente.html',
+  styleUrls: ['./agendamento-cliente.css']
 })
 export class AgendamentoClienteComponent implements OnInit {
 
