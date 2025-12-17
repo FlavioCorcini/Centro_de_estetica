@@ -1,5 +1,5 @@
 <div class="main-container">
-  
+
   <div class="stepper">
     <div class="step">
       <div class="circle" [class.active]="passoAtual >= 1">1</div>
@@ -30,9 +30,8 @@
         <p>Selecione o tipo de serviço desejado</p>
       </div>
       <div class="grid-areas">
-        <div *ngFor="let area of areas" class="card-option" 
-             [class.selected]="areaSelecionada?.id === area.id"
-             (click)="selecionarArea(area)">
+        <div *ngFor="let area of areas" class="card-option" [class.selected]="areaSelecionada?.id === area.id"
+          (click)="selecionarArea(area)">
           <div class="card-text">
             <h3>{{ area.nome }}</h3>
             <p>{{ area.descricao }}</p>
@@ -53,9 +52,9 @@
       <div class="grid-servicos">
         <div *ngFor="let servico of servicos" class="card-servico" (click)="selecionarServico(servico)">
           <div class="servico-info">
-              <h3>{{ servico.nome }}</h3>
-              <p>{{ servico.descricao }}</p>
-              <small>⏱ {{ servico.tempoAtendimento }}</small>
+            <h3>{{ servico.nome }}</h3>
+            <p>{{ servico.descricao }}</p>
+            <small>⏱ {{ servico.tempoAtendimento }}</small>
           </div>
           <div class="servico-preco">R$ {{ servico.valor }}</div>
         </div>
@@ -71,11 +70,17 @@
       <div class="grid-profissionais">
         <div class="card-profissional" (click)="selecionarProfissional({id: null, nome: 'Sem preferência'})">
           <div class="avatar">?</div>
-          <div class="info"><h3>Sem preferência</h3><p>Primeiro horário livre</p></div>
+          <div class="info">
+            <h3>Sem preferência</h3>
+            <p>Primeiro horário livre</p>
+          </div>
         </div>
         <div *ngFor="let prof of profissionais" class="card-profissional" (click)="selecionarProfissional(prof)">
           <div class="avatar">👤</div>
-          <div class="info"><h3>{{ prof.nome }}</h3><p>Especialista</p></div>
+          <div class="info">
+            <h3>{{ prof.nome }}</h3>
+            <p>Especialista</p>
+          </div>
         </div>
       </div>
     </div>
@@ -83,18 +88,18 @@
     <div *ngIf="passoAtual === 4" class="fade-in split-layout">
       <div class="date-selection">
         <div class="header-section">
-            <button class="btn-voltar-link" (click)="voltar()">← Voltar</button>
-            <h2>Selecione a Data</h2>
-            <p>Profissional: <strong>{{ profissionalSelecionado?.nome }}</strong></p>
+          <button class="btn-voltar-link" (click)="voltar()">← Voltar</button>
+          <h2>Selecione a Data</h2>
+          <p>Profissional: <strong>{{ profissionalSelecionado?.nome }}</strong></p>
         </div>
-        
+
         <div class="input-group">
-            <label>Data:</label>
-            <input type="date" [(ngModel)]="dataSelecionada" class="custom-input">
+          <label>Data:</label>
+          <input type="date" [(ngModel)]="dataSelecionada" class="custom-input">
         </div>
         <div class="input-group">
-            <label>Horário:</label>
-            <input type="time" [(ngModel)]="horaSelecionada" class="custom-input">
+          <label>Horário:</label>
+          <input type="time" [(ngModel)]="horaSelecionada" class="custom-input">
         </div>
       </div>
 
@@ -103,12 +108,12 @@
         <div class="resumo-item"><span>Categoria:</span> <strong>{{ areaSelecionada?.nome }}</strong></div>
         <div class="resumo-item"><span>Serviço:</span> <strong>{{ servicoSelecionado?.nome }}</strong></div>
         <div class="resumo-item"><span>Profissional:</span> <strong>{{ profissionalSelecionado?.nome }}</strong></div>
-        <div class="resumo-item"><span>Valor Total:</span> <strong class="valor">R$ {{ servicoSelecionado?.valor }}</strong></div>
-        
-        <button class="btn-confirmar" 
-                [disabled]="!dataSelecionada || !horaSelecionada" 
-                (click)="finalizarAgendamento()">
-            💲 Confirmar Agendamento
+        <div class="resumo-item"><span>Valor Total:</span> <strong class="valor">R$ {{ servicoSelecionado?.valor
+            }}</strong></div>
+
+        <button class="btn-confirmar" [disabled]="!dataSelecionada || !horaSelecionada"
+          (click)="finalizarAgendamento()">
+          💲 Confirmar Agendamento
         </button>
       </div>
     </div>

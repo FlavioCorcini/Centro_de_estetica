@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgendamentoService {
-  private apiUrl = 'http://localhost:8080'; // Endereço do seu Java
 
-  constructor(private http: HttpClient) {}
+  private apiUrl = 'http://localhost:8080';
 
-  // 1. Busca Áreas
+  constructor(private http: HttpClient) { }
+
   listarAreas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/areas`);
+    return this.http.get<any[]>(`${this.apiUrl}/areas`); 
   }
 
-  // 2. Busca Serviços por Área
   listarServicosPorArea(idArea: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/servicos/area/${idArea}`);
+    return this.http.get<any[]>(`${this.apiUrl}/servicos/por-area/${idArea}`); 
   }
 
-  // 3. Busca Horários de um Funcionário
-  listarHorarios(idFuncionario: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/horarios/funcionario/${idFuncionario}`);
+  listarFuncionarios(idServico: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/funcionarios/servico/${idServico}`);
   }
 
-  // 4. Busca Funcionários (A função que estava faltando!)
-  listarFuncionarios(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/usuarios`);
+  finalizarAgendamento(agendamento: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/agendamentos`, agendamento);
   }
 }

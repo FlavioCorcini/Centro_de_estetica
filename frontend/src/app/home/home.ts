@@ -47,14 +47,21 @@ export class HomeComponent implements OnInit {
 
   carregarProfissionais() {
     this.profissionais = [];
-    this.agendamentoService.listarFuncionarios().subscribe({
-      next: (d) => this.profissionais = d, 
-      error: (e) => console.error(e)
-    });
-  }
+        const idServicoSelecionado = this.servicoSelecionado?.id;
+    if (idServicoSelecionado) {
+        this.agendamentoService.listarFuncionarios(idServicoSelecionado).subscribe({
+            next: (d) => this.profissionais = d, 
+            error: (e) => console.error(e)
+        });
+    }
+}
 
-  selecionarArea(area: any) { this.areaSelecionada = area; }
-  
+selecionarArea(area: any) { 
+    this.areaSelecionada = area; 
+    if (this.areaSelecionada) {
+        this.proximoPasso(); 
+    }
+}  
   selecionarServico(servico: any) { 
     this.servicoSelecionado = servico; 
     this.passoAtual = 3; 
@@ -69,11 +76,11 @@ export class HomeComponent implements OnInit {
   proximoPasso() {
     if (this.passoAtual === 1 && this.areaSelecionada) {
       this.passoAtual = 2;
-      this.carregarServicos(this.areaSelecionada.id);
+      this.carregarServicos(this.areaSelecionada.id); 
     } else if (this.passoAtual === 4 && this.dataSelecionada && this.horaSelecionada) {
       this.finalizarAgendamento();
     }
-  }
+}
 
   voltar() {
     if (this.passoAtual > 1) {
