@@ -22,105 +22,119 @@ import com.cefet.centro_de_estetica.repository.UsuarioRepository;
 @Service
 public class AgendamentoService {
 
-	private final AgendamentoRepository agendamentoRepository;
-	private final UsuarioRepository usuarioRepository;
-	private final ServicoRepository servicoRepository;
-	private final AgendamentoMapper mapper;
+    private final AgendamentoRepository agendamentoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ServicoRepository servicoRepository;
+    private final AgendamentoMapper mapper;
 
-	public AgendamentoService(AgendamentoRepository agendamentoRepository, UsuarioRepository usuarioRepository,
-			ServicoRepository servicoRepository, AgendamentoMapper mapper) {
-		this.agendamentoRepository = agendamentoRepository;
-		this.usuarioRepository = usuarioRepository;
-		this.servicoRepository = servicoRepository;
-		this.mapper = mapper;
-	}
+    public AgendamentoService(AgendamentoRepository agendamentoRepository, UsuarioRepository usuarioRepository,
+            ServicoRepository servicoRepository, AgendamentoMapper mapper) {
+        this.agendamentoRepository = agendamentoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.servicoRepository = servicoRepository;
+        this.mapper = mapper;
+    }
 
-	public AgendamentoResponseDTO criar(AgendamentoRequestDTO dto) {
+    public AgendamentoResponseDTO criar(AgendamentoRequestDTO dto) {
+        Usuario cliente = usuarioRepository.findById(dto.idCliente())
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
-		Usuario cliente = usuarioRepository.findById(dto.idCliente())
-				.orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        Usuario funcionario = usuarioRepository.findById(dto.idFuncionario())
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
-		Usuario funcionario = usuarioRepository.findById(dto.idFuncionario())
-				.orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+        Servico servico = servicoRepository.findById(dto.idServico())
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
-		Servico servico = servicoRepository.findById(dto.idServico())
-				.orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+        // --- LÓGICA DE BLOQUEIO POR INTERVALO (DURAÇÃO) ---
+        LocalDateTime inicioDesejado = dto.dataHora();
+        
+        // Calcula o término somando a duração (LocalTime) ao início
+        LocalDateTime fimDesejado = inicioDesejado
+                .plusHours(servico.getTempoAtendimento().getHour())
+                .plusMinutes(servico.getTempoAtendimento().getMinute());
 
-		if (agendamentoRepository.existsByFuncionarioAndDataHora(funcionario, dto.dataHora())) {
-			throw new RuntimeException(
-					"Horário indisponível! O funcionário já tem um agendamento confirmado neste horário.");
-		}
+        // Busca todos os agendamentos do profissional no dia selecionado
+        LocalDateTime inicioDia = inicioDesejado.toLocalDate().atStartOfDay();
+        LocalDateTime fimDia = inicioDesejado.toLocalDate().atTime(LocalTime.MAX);
+        
+        List<Agendamento> agendamentosDoDia = agendamentoRepository
+                .findByFuncionarioAndDataHoraBetween(funcionario, inicioDia, fimDia);
 
-		boolean fazServico = funcionario.getServicos().stream().anyMatch(s -> s.getId().equals(servico.getId()));
-		if (!fazServico) {
-			throw new RuntimeException("Funcionário não realiza este serviço.");
-		}
+        // Verifica sobreposição: (NovoInício < ExistenteFim) AND (NovoFim > ExistenteInício)
+        for (Agendamento ag : agendamentosDoDia) {
+            if (ag.getStatus() == StatusAgendamento.CANCELADO) continue;
 
-		Agendamento agendamento = new Agendamento();
-		agendamento.setCliente(cliente);
-		agendamento.setFuncionario(funcionario);
-		agendamento.setServico(servico);
-		agendamento.setDataHora(dto.dataHora());
-		agendamento.setObservacoes(dto.observacoes());
-		agendamento.setStatus(StatusAgendamento.PENDENTE);
-		agendamento.setValorCobrado(servico.getValor());
+            LocalDateTime exInicio = ag.getDataHora();
+            LocalDateTime exFim = exInicio
+                    .plusHours(ag.getServico().getTempoAtendimento().getHour())
+                    .plusMinutes(ag.getServico().getTempoAtendimento().getMinute());
 
-		agendamentoRepository.save(agendamento);
+            if (inicioDesejado.isBefore(exFim) && fimDesejado.isAfter(exInicio)) {
+                throw new RuntimeException("Horário indisponível! Conflito com agendamento das " + exInicio.toLocalTime());
+            }
+        }
+        // --- FIM DA LÓGICA DE BLOQUEIO ---
 
-		return mapper.toResponseDTO(agendamento);
-	}
+        boolean fazServico = funcionario.getServicos().stream().anyMatch(s -> s.getId().equals(servico.getId()));
+        if (!fazServico) {
+            throw new RuntimeException("Funcionário não realiza este serviço.");
+        }
 
-	public List<AgendamentoResponseDTO> listarTodos() {
-		return agendamentoRepository.findAll().stream().map(mapper::toResponseDTO).collect(Collectors.toList());
-	}
+        Agendamento agendamento = new Agendamento();
+        agendamento.setCliente(cliente);
+        agendamento.setFuncionario(funcionario);
+        agendamento.setServico(servico);
+        agendamento.setDataHora(dto.dataHora());
+        agendamento.setObservacoes(dto.observacoes());
+        agendamento.setStatus(StatusAgendamento.PENDENTE);
+        agendamento.setValorCobrado(servico.getValor());
 
-	public List<AgendamentoResponseDTO> buscarPorCliente(Long idCliente) {
-		Usuario cliente = usuarioRepository.findById(idCliente)
-				.orElseThrow(() -> new RuntimeException("Cliente não encontrado com id: " + idCliente));
+        agendamentoRepository.save(agendamento);
+        return mapper.toResponseDTO(agendamento);
+    }
 
-		return agendamentoRepository.findByCliente(cliente).stream().map(mapper::toResponseDTO)
-				.collect(Collectors.toList());
-	}
+    public List<AgendamentoResponseDTO> listarTodos() {
+        return agendamentoRepository.findAll().stream().map(mapper::toResponseDTO).collect(Collectors.toList());
+    }
 
-	public List<AgendamentoResponseDTO> buscarPorFuncionario(Long idFuncionario) {
-		Usuario funcionario = usuarioRepository.findById(idFuncionario)
-				.orElseThrow(() -> new RuntimeException("Funcionário não encontrado com id: " + idFuncionario));
+    public List<AgendamentoResponseDTO> buscarPorCliente(Long idCliente) {
+        Usuario cliente = usuarioRepository.findById(idCliente)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com id: " + idCliente));
 
-		return agendamentoRepository.findByFuncionario(funcionario).stream().map(mapper::toResponseDTO)
-				.collect(Collectors.toList());
-	}
+        return agendamentoRepository.findByCliente(cliente).stream().map(mapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
 
-	public List<AgendamentoResponseDTO> buscarAgendaDoDia(Long usuarioId, LocalDate data) {
+    public List<AgendamentoResponseDTO> buscarPorFuncionario(Long idFuncionario) {
+        Usuario funcionario = usuarioRepository.findById(idFuncionario)
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com id: " + idFuncionario));
+
+        return agendamentoRepository.findByFuncionario(funcionario).stream().map(mapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<AgendamentoResponseDTO> buscarAgendaDoDia(Long usuarioId, LocalDate data) {
         LocalDateTime inicioDia = data.atStartOfDay();
         LocalDateTime fimDia = data.atTime(LocalTime.MAX);
         
         List<Agendamento> agendamentos;
 
         if (usuarioId == null) {
-            // Se não veio ID, assume que é ADMIN querendo ver a agenda geral do salão
             agendamentos = agendamentoRepository.findByDataHoraBetween(inicioDia, fimDia);
-        
         } else {
-            // Busca o usuário
             Usuario usuario = usuarioRepository.findById(usuarioId)
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-            // decisão baseada no TIPO
             switch (usuario.getTipo()) {
                 case FUNCIONARIO:
-                    // Se for funcionário, busca onde ele é o prestador de serviço
                     agendamentos = agendamentoRepository.findByFuncionarioAndDataHoraBetween(usuario, inicioDia, fimDia);
                     break;
-                
                 case CLIENTE:
-                    // Se for cliente, busca o histórico dele
                     agendamentos = agendamentoRepository.findByClienteAndDataHoraBetween(usuario, inicioDia, fimDia);
                     break;
-                
                 case ADMIN:
                     agendamentos = agendamentoRepository.findByDataHoraBetween(inicioDia, fimDia);
                     break;
-                    
                 default:
                     throw new RuntimeException("Tipo de usuário desconhecido");
             }
@@ -131,9 +145,7 @@ public class AgendamentoService {
                 .collect(Collectors.toList());
     }
 
-	// Buscar por DATA (O dia inteiro)
-	public List<AgendamentoResponseDTO> buscarPorData(LocalDate data) {
-        // Define o intervalo: 00:00:00 até 23:59:59
+    public List<AgendamentoResponseDTO> buscarPorData(LocalDate data) {
         LocalDateTime inicioDia = data.atStartOfDay();
         LocalDateTime fimDia = data.atTime(LocalTime.MAX);
 
@@ -142,64 +154,17 @@ public class AgendamentoService {
                 .collect(Collectors.toList());
     }
 
-	public AgendamentoResponseDTO atualizar(Long id, AgendamentoRequestDTO dto) {
-        Agendamento agendamento = agendamentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado com id: " + id));
-
-        // Busca as novas entidades (caso tenham mudado)
-        Usuario novoFuncionario = usuarioRepository.findById(dto.idFuncionario())
-                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
-        Servico novoServico = servicoRepository.findById(dto.idServico())
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
-        Usuario novoCliente = usuarioRepository.findById(dto.idCliente())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
-        // Só validamos se houve mudança de horário OU de funcionário
-        boolean mudouHorario = !agendamento.getDataHora().equals(dto.dataHora());
-        boolean mudouFuncionario = !agendamento.getFuncionario().getId().equals(novoFuncionario.getId());
-
-        if (mudouHorario || mudouFuncionario) {
-            boolean horarioOcupado = agendamentoRepository.existeConflitoDeHorario(novoFuncionario, dto.dataHora());
-            if (horarioOcupado) {
-                throw new RuntimeException("O novo horário escolhido já está ocupado!");
-            }
-        }
-
-        // Valida se o funcionário (novo ou atual) faz o serviço
-        boolean fazServico = novoFuncionario.getServicos().stream()
-                .anyMatch(s -> s.getId().equals(novoServico.getId()));
-        if (!fazServico) {
-            throw new RuntimeException("O funcionário selecionado não realiza este serviço.");
-        }
-
-        // Atualiza os dados
-        agendamento.setCliente(novoCliente);
-        agendamento.setFuncionario(novoFuncionario);
-        agendamento.setServico(novoServico);
-        agendamento.setDataHora(dto.dataHora());
-        agendamento.setObservacoes(dto.observacoes());
-
-        // Se mudou o serviço, atualiza o valor cobrado
-        if (!agendamento.getServico().getId().equals(novoServico.getId())) {
-             agendamento.setValorCobrado(novoServico.getValor());
-        }
-
-        agendamentoRepository.save(agendamento);
-        return mapper.toResponseDTO(agendamento);
-    }
-
-	public void deletar(Long id) {
+    public void deletar(Long id) {
         if (!agendamentoRepository.existsById(id)) {
             throw new RuntimeException("Agendamento não encontrado para deletar.");
         }
         agendamentoRepository.deleteById(id);
     }
 
-	public void atualizarStatus(Long id, StatusAgendamento novoStatus) {
+    public void atualizarStatus(Long id, StatusAgendamento novoStatus) {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Agendamento não encontrado."));
         
-        // Não pode voltar para PENDENTE se já estava CONCLUIDO
         if (agendamento.getStatus() == StatusAgendamento.CONCLUIDO && novoStatus == StatusAgendamento.PENDENTE) {
              throw new RuntimeException("Não é possível reabrir um agendamento concluído.");
         }

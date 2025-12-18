@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      </div>
+    </div>
 
     <div *ngIf="passoAtual === 2" class="fade-in">
       <div class="header-section">
@@ -87,25 +87,53 @@
       <div class="date-selection">
         <div class="header-section">
           <button class="btn-voltar-link" (click)="voltar()">← Voltar</button>
-          <h2>Selecione a Data</h2>
+          <h2>Selecione a Data e Horário</h2>
           <p>Profissional: <strong>{{ profissionalSelecionado?.nome }}</strong></p>
         </div>
 
         <div class="input-group">
           <label>Data:</label>
-          <input type="date" [(ngModel)]="dataSelecionada" class="custom-input">
+          <input type="date" name="data" [(ngModel)]="dataSelecionada" 
+                 (change)="atualizarDisponibilidade()" class="custom-input">
         </div>
+
         <div class="input-group">
-          <label>Horário:</label>
-          <input type="time" [(ngModel)]="horaSelecionada" class="custom-input">
+          <label>Horários Disponíveis:</label>
+          <div class="grid-horarios">
+            <button *ngFor="let h of horariosDisponiveis" 
+                    type="button"
+                    class="btn-hora"
+                    [class.selecionado]="horaSelecionada === h"
+                    [class.ocupado]="estaOcupado(h)"
+                    [disabled]="estaOcupado(h)"
+                    (click)="selecionarHora(h)">
+              {{ h }}
+            </button>
+          </div>
+          <small class="info-legenda" *ngIf="dataSelecionada">
+            <span class="cor-ocupado"></span> Horário Indisponível
+          </small>
         </div>
       </div>
 
       <div class="resumo-card">
         <h3>Resumo do Agendamento</h3>
-        <div class="resumo-item"><span>Categoria:</span> <strong>{{ areaSelecionada?.nome }}</strong></div>
-        <div class="resumo-item"><span>Serviço:</span> <strong>{{ servicoSelecionado?.nome }}</strong></div>
-        <div class="resumo-item"><span>Profissional:</span> <strong>{{ profissionalSelecionado?.nome }}</strong></div>
+        <div class="resumo-item">
+          <span>Serviço:</span> 
+          <strong>{{ servicoSelecionado?.nome }}</strong>
+        </div>
+        <div class="resumo-item">
+          <span>Profissional:</span> 
+          <strong>{{ profissionalSelecionado?.nome }}</strong>
+        </div>
+        <div class="resumo-item">
+          <span>Data:</span> 
+          <strong>{{ dataSelecionada ? (dataSelecionada | date:'dd/MM/yyyy') : '--' }}</strong>
+        </div>
+        <div class="resumo-item">
+          <span>Horário:</span> 
+          <strong>{{ horaSelecionada || '--' }}</strong>
+        </div>
         <div class="resumo-item">
           <span>Valor Total:</span> 
           <strong class="valor">{{ servicoSelecionado?.valor | currency:'BRL' }}</strong>
@@ -114,7 +142,7 @@
         <button class="btn-confirmar" 
                 [disabled]="!dataSelecionada || !horaSelecionada"
                 (click)="finalizarAgendamento()">
-          💲 Confirmar Agendamento
+           Confirmar Agendamento
         </button>
       </div>
     </div>
