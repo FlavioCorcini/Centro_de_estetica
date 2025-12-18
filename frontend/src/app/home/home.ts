@@ -1,23 +1,23 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { AgendamentoService } from '../services/agendamento.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
 export class HomeComponent implements OnInit {
 
   passoAtual: number = 1;
-  
+
   areas: any[] = [];
   servicos: any[] = [];
   profissionais: any[] = [];
-  
+
   // Grade de horários
   horariosDisponiveis: string[] = [];
   agendamentosOcupados: any[] = [];
@@ -30,8 +30,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private agendamentoService: AgendamentoService,
-    private cdr: ChangeDetectorRef 
-  ) {}
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.carregarAreas();
@@ -54,8 +54,8 @@ export class HomeComponent implements OnInit {
     if (!this.dataSelecionada || !this.profissionalSelecionado) return;
 
     const idFunc = this.profissionalSelecionado.id_usuario || this.profissionalSelecionado.id;
-    
-    if (!idFunc) return; 
+
+    if (!idFunc) return;
 
     this.agendamentoService.buscarAgendaDoDia(idFunc, this.dataSelecionada).subscribe({
       next: (d: any) => {
@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
   }
 
   carregarServicos(idArea: number) {
-    this.servicos = []; 
+    this.servicos = [];
     this.agendamentoService.listarServicosPorArea(idArea).subscribe({
       next: (d) => {
         this.servicos = d;
@@ -135,22 +135,22 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  selecionarArea(area: any) { 
-    this.areaSelecionada = area; 
-    this.carregarServicos(area.id); 
-    this.passoAtual = 2; 
+  selecionarArea(area: any) {
+    this.areaSelecionada = area;
+    this.carregarServicos(area.id);
+    this.passoAtual = 2;
   }
 
-  selecionarServico(servico: any) { 
-    this.servicoSelecionado = servico; 
+  selecionarServico(servico: any) {
+    this.servicoSelecionado = servico;
     this.carregarProfissionais();
-    this.passoAtual = 3; 
+    this.passoAtual = 3;
   }
 
   selecionarProfissional(prof: any) {
     this.profissionalSelecionado = prof;
-    this.passoAtual = 4; 
-    this.atualizarDisponibilidade(); 
+    this.passoAtual = 4;
+    this.atualizarDisponibilidade();
   }
 
   voltar() {
@@ -164,10 +164,10 @@ export class HomeComponent implements OnInit {
     const idFunc = this.profissionalSelecionado?.id_usuario || this.profissionalSelecionado?.id;
 
     const agendamento = {
-      idCliente: 5, 
-      idFuncionario: idFunc, 
+      idCliente: 5,
+      idFuncionario: idFunc,
       idServico: this.servicoSelecionado.id,
-      dataHora: `${this.dataSelecionada}T${this.horaSelecionada}:00`, 
+      dataHora: `${this.dataSelecionada}T${this.horaSelecionada}:00`,
       observacoes: "Agendado via Web"
     };
 
@@ -175,7 +175,8 @@ export class HomeComponent implements OnInit {
       next: (res) => {
         // Redireciona para o Passo 5 (Sucesso)
         this.passoAtual = 5;
-        this.cdr.detectChanges();
+        alert("Agendamento realizado com sucesso!");
+        this.resetarFluxo();
       },
       error: (err) => alert("Erro ao salvar. Verifique se o horário ainda está disponível.")
     });
