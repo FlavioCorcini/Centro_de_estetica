@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login'; // Importe seu componente
+import { LoginComponent } from './login/login'; 
 import { HomeComponent } from './home/home'; 
+import { MeusAgendamentosComponent } from './meus-agendamentos/meus-agendamentos'; 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redireciona a raiz para o login
-    { path: 'login', component: LoginComponent } ,         // Define a rota do login
-    { path: 'home', component: HomeComponent }
+    { path: '', redirectTo: 'login', pathMatch: 'full' }, 
+    { path: 'login', component: LoginComponent },       
+    { path: 'home', component: HomeComponent },         
+    { path: 'meus-agendamentos', component: MeusAgendamentosComponent }
 ];

@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">
+      Centro de <span>Estética</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a routerLink="/home" routerLinkActive="active-link">Agendar</a></li>
+      <li><a routerLink="/meus-agendamentos" routerLinkActive="active-link">Meus Horários</a></li>
+      <li><a routerLink="/login" class="btn-logout">Sair</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

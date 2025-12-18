@@ -1,0 +1,45 @@
+<div class="main-container">
+  <div class="content-card">
+    <div class="header-section">
+      <h2>Meus Agendamentos</h2>
+      <p>Gerencie seus horários marcados</p>
+    </div>
+
+    <div *ngIf="carregando" class="loading-box">
+      <p>Carregando seus agendamentos...</p>
+    </div>
+
+    <div *ngIf="!carregando && listaAgendamentos.length > 0" class="lista-cards">
+      <div *ngFor="let ag of listaAgendamentos" class="card-agendamento">
+        <div class="info-principal">
+          <div class="data-badge">
+            <span class="dia">{{ ag.dataHora | date:'dd' }}</span>
+            <span class="mes">{{ ag.dataHora | date:'MMM' }}</span>
+          </div>
+          <div class="detalhes">
+            <h3>{{ ag.servico?.nome }}</h3>
+            <p>👤 Profissional: {{ ag.funcionario?.nome || 'Não informado' }}</p>
+            <p>⏰ Horário: {{ ag.dataHora | date:'HH:mm' }}h</p>
+          </div>
+        </div>
+
+        <div class="acoes">
+          <span class="badge-status" [ngClass]="getStatusClass(ag.status)">
+            {{ ag.status || 'PENDENTE' }}
+          </span>
+          
+          <button *ngIf="ag.status !== 'CANCELADO' && ag.status !== 'CONCLUIDO'" 
+                  (click)="cancelar(ag.id)" 
+                  class="btn-cancelar">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!carregando && listaAgendamentos.length === 0" class="empty-state">
+      <p>Você ainda não possui agendamentos.</p>
+      <button class="btn-proximo" onclick="window.location.href='/home'">Agendar Agora</button>
+    </div>
+  </div>
+</div>

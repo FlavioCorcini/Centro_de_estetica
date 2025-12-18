@@ -1,0 +1,80 @@
+.main-container { 
+  background-color: #f8f9fa; 
+  min-height: 100vh; 
+  padding: 20px; 
+  font-family: 'Segoe UI', sans-serif; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+}
+
+.content-card { 
+  background-color: #ffffff; 
+  width: 100%; 
+  max-width: 800px; 
+  border-radius: 16px; 
+  padding: 30px; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+}
+
+.lista-cards { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+
+.card-agendamento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  transition: 0.2s;
+}
+
+.card-agendamento:hover { border-color: #000; background: #fafafa; }
+
+.info-principal { display: flex; align-items: center; gap: 20px; }
+
+.data-badge {
+  background: #000;
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.dia { font-size: 1.4rem; font-weight: bold; }
+.mes { font-size: 0.8rem; text-transform: uppercase; }
+
+.detalhes h3 { margin: 0; font-size: 1.1rem; color: #333; }
+.detalhes p { margin: 3px 0; font-size: 0.9rem; color: #666; }
+
+.acoes { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+.badge-status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-amarelo { background: #fff3cd; color: #856404; }
+.status-verde { background: #d4edda; color: #155724; }
+.status-vermelho { background: #f8d7da; color: #721c24; }
+
+.btn-cancelar {
+  background: none;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 5px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.3s;
+}
+
+.btn-cancelar:hover { background: #dc3545; color: white; }
+
+.empty-state { text-align: center; padding: 40px; color: #999; }

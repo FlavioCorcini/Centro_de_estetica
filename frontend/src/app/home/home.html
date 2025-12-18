@@ -142,9 +142,39 @@
         <button class="btn-confirmar" 
                 [disabled]="!dataSelecionada || !horaSelecionada"
                 (click)="finalizarAgendamento()">
-           Confirmar Agendamento
+            Confirmar Agendamento
         </button>
       </div>
+    </div>
+
+    <div *ngIf="passoAtual === 5" class="fade-in success-container">
+      <div class="success-icon">✔️</div>
+      <h2>Agendamento Confirmado!</h2>
+      <p>Tudo pronto! <strong>{{ profissionalSelecionado?.nome }}</strong> estará te esperando.</p>
+      
+      <div class="comprovante-box">
+        <h3>Detalhes da Reserva</h3>
+        <div class="resumo-item">
+          <span>✂️ Serviço:</span> 
+          <strong>{{ servicoSelecionado?.nome }}</strong>
+        </div>
+        <div class="resumo-item">
+          <span>📅 Data:</span> 
+          <strong>{{ dataSelecionada | date:'dd/MM/yyyy' }}</strong>
+        </div>
+        <div class="resumo-item">
+          <span>⏰ Horário:</span> 
+          <strong>{{ horaSelecionada }}</strong>
+        </div>
+        <div class="resumo-item">
+          <span>💰 Valor Total:</span> 
+          <strong class="valor">{{ servicoSelecionado?.valor | currency:'BRL' }}</strong>
+        </div>
+      </div>
+
+      <button class="btn-proximo" (click)="resetarFluxo()">
+        Fazer Novo Agendamento
+      </button>
     </div>
 
   </div>
