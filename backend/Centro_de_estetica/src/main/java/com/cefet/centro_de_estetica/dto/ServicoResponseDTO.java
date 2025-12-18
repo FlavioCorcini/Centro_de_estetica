@@ -1,7 +1,6 @@
 package com.cefet.centro_de_estetica.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 import com.cefet.centro_de_estetica.entity.Servico;
 
@@ -10,7 +9,7 @@ public class ServicoResponseDTO {
     private Long id;
     private String nome;
     private String descricao;
-    private LocalTime tempoAtendimento;
+    private Integer tempoAtendimento;
     private BigDecimal valor;
     private Long idArea;     
     private String nomeArea; 
@@ -28,7 +27,7 @@ public class ServicoResponseDTO {
         this.nomeArea = servico.getArea().getNome();
     }
 
-    public ServicoResponseDTO(Long id, String nome, String descricao, BigDecimal valor, LocalTime tempoAtendimento, String nomeArea) {
+    public ServicoResponseDTO(Long id, String nome, String descricao, BigDecimal valor, Integer tempoAtendimento, String nomeArea) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -61,11 +60,11 @@ public class ServicoResponseDTO {
         this.descricao = descricao;
     }
 
-    public LocalTime getTempoAtendimento() {
+    public Integer getTempoAtendimento() {
         return tempoAtendimento; 
     }
 
-    public void setTempoAtendimento(LocalTime tempoAtendimento) { 
+    public void setTempoAtendimento(Integer tempoAtendimento) { 
         this.tempoAtendimento = tempoAtendimento; 
     }
 

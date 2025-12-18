@@ -50,8 +50,7 @@ public class AgendamentoService {
         
         // Calcula o término somando a duração (LocalTime) ao início
         LocalDateTime fimDesejado = inicioDesejado
-                .plusHours(servico.getTempoAtendimento().getHour())
-                .plusMinutes(servico.getTempoAtendimento().getMinute());
+                .plusMinutes(servico.getTempoAtendimento());
 
         // Busca todos os agendamentos do profissional no dia selecionado
         LocalDateTime inicioDia = inicioDesejado.toLocalDate().atStartOfDay();
@@ -66,8 +65,7 @@ public class AgendamentoService {
 
             LocalDateTime exInicio = ag.getDataHora();
             LocalDateTime exFim = exInicio
-                    .plusHours(ag.getServico().getTempoAtendimento().getHour())
-                    .plusMinutes(ag.getServico().getTempoAtendimento().getMinute());
+                    .plusMinutes(ag.getServico().getTempoAtendimento());
 
             if (inicioDesejado.isBefore(exFim) && fimDesejado.isAfter(exInicio)) {
                 throw new RuntimeException("Horário indisponível! Conflito com agendamento das " + exInicio.toLocalTime());

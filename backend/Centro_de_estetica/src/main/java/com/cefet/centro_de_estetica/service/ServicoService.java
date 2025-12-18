@@ -34,7 +34,7 @@ public class ServicoService {
         servico.setDescricao(dto.descricao());
         servico.setValor(dto.valor());
         
-        if (dto.tempoAtendimento().getMinute() % 15 != 0) {
+        if (dto.tempoAtendimento() % 15 != 0) {
             throw new RuntimeException("A duração do serviço deve ser múltipla de 15 minutos (ex: 15, 30, 45 min).");
         }
         servico.setTempoAtendimento(dto.tempoAtendimento());
@@ -67,7 +67,7 @@ public class ServicoService {
         servicoEncontrado.setNome(dto.nome());
         servicoEncontrado.setDescricao(dto.descricao());
         servicoEncontrado.setValor(dto.valor());
-        if (dto.tempoAtendimento().getMinute() % 15 != 0) {
+        if (dto.tempoAtendimento() % 15 != 0) {
             throw new RuntimeException("A duração do serviço deve ser múltipla de 15 minutos (ex: 15, 30, 45 min).");
         }
         servicoEncontrado.setTempoAtendimento(dto.tempoAtendimento());

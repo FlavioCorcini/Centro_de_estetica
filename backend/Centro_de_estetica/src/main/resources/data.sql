@@ -5,11 +5,11 @@ INSERT INTO tb_area (id, nome, descricao) VALUES (3, 'Estética Facial', 'Limpez
 INSERT INTO tb_area (id, nome, descricao) VALUES (4, 'Massagem', 'Relaxante, modeladora e drenagem');
 
 -- 2. SERVIÇOS (vinculando à Área)
-INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (1, 'Corte Masculino', 'Degradê na régua', 45.00, '00:30:00', 1);
-INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (2, 'Corte Feminino', 'Corte e escova', 80.00, '01:00:00', 1);
-INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (3, 'Manicure Simples', 'Cuticulagem e Esmaltação', 35.00, '00:45:00', 2);
-INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (4, 'Limpeza de Pele', 'Extração profunda', 120.00, '01:30:00', 3);
-INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (5, 'Drenagem Linfática', 'Massagem corporal', 150.00, '01:00:00', 4);
+INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (1, 'Corte Masculino', 'Degradê na régua', 45.00, '30', 1);
+INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (2, 'Corte Feminino', 'Corte e escova', 80.00, '60', 1);
+INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (3, 'Manicure Simples', 'Cuticulagem e Esmaltação', 35.00, '45', 2);
+INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (4, 'Limpeza de Pele', 'Extração profunda', 120.00, '90', 3);
+INSERT INTO tb_servico (id, nome, descricao, valor, tempo_atendimento, id_area) VALUES (5, 'Drenagem Linfática', 'Massagem corporal', 150.00, '30', 4);
 
 -- 3. USUÁRIOS
 -- ID 1: Admin

@@ -1,7 +1,6 @@
 package com.cefet.centro_de_estetica.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,7 +30,7 @@ public class Servico {
     private String descricao;
     
     @Column(name = "tempo_atendimento",nullable = false)
-    private LocalTime tempoAtendimento;
+    private Integer tempoAtendimento; // minutos
     
     @Column(name = "valor",nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
@@ -56,8 +55,9 @@ public class Servico {
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public LocalTime getTempoAtendimento() { return tempoAtendimento; }
-    public void setTempoAtendimento(LocalTime tempoAtendimento) { this.tempoAtendimento = tempoAtendimento; }
+    public Integer getTempoAtendimento() { return tempoAtendimento; }
+    
+    public void setTempoAtendimento(Integer tempoAtendimento) { this.tempoAtendimento = tempoAtendimento; }
 
     public BigDecimal getValor() { return valor; }
     public void setValor(BigDecimal valor) { this.valor = valor; }
