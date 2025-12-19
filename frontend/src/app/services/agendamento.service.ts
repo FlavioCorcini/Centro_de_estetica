@@ -11,7 +11,6 @@ export class AgendamentoService {
 
   constructor(private http: HttpClient) { }
 
-  // --- MÉTODOS DE ÁREAS E SERVIÇOS ---
 
   listarAreas(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/areas`); 
@@ -25,7 +24,6 @@ export class AgendamentoService {
     return this.http.get<any[]>(`${this.apiUrl}/usuarios/servico/${idServico}`);
   }
 
-  // --- MÉTODOS DE AGENDAMENTO (CLIENTE E GERAL) ---
 
   buscarAgendaDoDia(usuarioId: number, data: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/agendamentos/agenda-diaria`, {
@@ -45,7 +43,6 @@ export class AgendamentoService {
     return this.http.delete(`${this.apiUrl}/agendamentos/${id}`);
   }
 
-  // --- MÉTODOS DE HORÁRIOS DE TRABALHO (FUNCIONÁRIO) ---
 
   buscarHorariosTrabalho(idFuncionario: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/horarios/funcionario/${idFuncionario}`);
@@ -55,6 +52,21 @@ export class AgendamentoService {
     return this.http.post(`${this.apiUrl}/horarios`, dto);
   }
 
+  listarTodosUsuarios(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/usuarios`);
+  }
+
+  cadastrarUsuario(usuario: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/usuarios`, usuario);
+  }
+
+  atualizarUsuario(id: number, usuario: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/usuarios/${id}`, usuario);
+  }
+
+  alterarStatusUsuario(id: number): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/usuarios/${id}/status`, {});
+  }
 
   listarClientes(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/usuarios/clientes`);
@@ -62,10 +74,5 @@ export class AgendamentoService {
 
   cadastrarCliente(cliente: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/usuarios/clientes`, cliente);
-  }
-
-  alterarStatusCliente(id: number): Observable<any> {
-    // PATCH para /usuarios/{id}/status
-    return this.http.patch<any>(`${this.apiUrl}/usuarios/${id}/status`, {});
   }
 }

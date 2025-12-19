@@ -15,34 +15,26 @@ export class FuncionarioComponent implements OnInit {
 
   usuarioLogado: any = null;
   tipo: string = '';
-
-  // Controle de Abas
   abaAtual: string = 'AGENDAMENTOS';
 
-  // --- NOVAS VARIÁVEIS (Listas) ---
   listaClientes: any[] = [];
   listaFuncionarios: any[] = [];
 
-  // --- VARIÁVEIS DO MODAL E EDIÇÃO ---
   modalAberto: boolean = false;
-  perfilCadastro: string = 'CLIENTE'; // Define se o modal é de Cliente ou Funcionario
+  perfilCadastro: string = 'CLIENTE'; 
 
-  // Objeto que liga com o formulário do Modal
   usuarioEdicao: any = {
     id: null, nome: '', email: '', telefone: '', senha: '', cargo: '', ativo: true
   };
 
-  // Dados da Agenda (Visualização do dia)
   agendaProfissional: any[] = [];
   dataVisualizacaoAgenda: string = '';
 
-  // Dados de Horários (Configuração/Sanfona)
   diaExpandido: string | null = null;
   diasSemana: string[] = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
   slotsHorariosConfig: string[] = [];
   horariosConfigurados: { [key: string]: string[] } = {};
 
-  // Dados de Áreas
   areas: any[] = [];
 
   constructor(
@@ -56,10 +48,10 @@ export class FuncionarioComponent implements OnInit {
     this.inicializarDatas();
     this.gerarSlotsConfiguracao();
 
-    // Carregamentos iniciais
     if (this.usuarioLogado) {
       this.carregarHorariosSalvos();
       this.carregarAgendaDoProfissional();
+      this.carregarUsuariosDoSistema(); 
     }
   }
 
@@ -77,47 +69,36 @@ export class FuncionarioComponent implements OnInit {
     }
   }
 
-  // --- NAVEGAÇÃO ENTRE ABAS ---
   mudarAba(novaAba: string) {
     this.abaAtual = novaAba;
 
     if (novaAba === 'AGENDAMENTOS') this.carregarAgendaDoProfissional();
     if (novaAba === 'AREAS') this.carregarAreas();
-
-    // Se clicar em Usuários ou Funcionários, carrega os dados
     if (novaAba === 'USUARIOS' || novaAba === 'FUNCIONARIOS') {
       this.carregarUsuariosDoSistema();
     }
   }
 
-  // --- LÓGICA DE GERENCIAMENTO DE USUÁRIOS (POPULAR TABELA) ---
-
+  // CORREÇÃO: Agora busca do AgendamentoService que é o seu único service de banco
   carregarUsuariosDoSistema() {
-    // MOCK TEMPORÁRIO: Simula dados vindos do banco para você ver a tela funcionando
-    // Futuramente, troque isso pela chamada do seu Service (ex: this.service.listarTodos())
-
-    if (this.listaClientes.length === 0) {
-      this.listaClientes = [
-        { id: 1, nome: 'Maria Silva', email: 'maria@gmail.com', telefone: '(31) 99999-8888', perfil: 'CLIENTE', ativo: true },
-        { id: 2, nome: 'João Souza', email: 'joao@hotmail.com', telefone: '(31) 98888-7777', perfil: 'CLIENTE', ativo: true },
-        { id: 3, nome: 'Cliente Inativo', email: 'inativo@teste.com', telefone: '(31) 0000-0000', perfil: 'CLIENTE', ativo: false }
-      ];
-    }
-
-    if (this.listaFuncionarios.length === 0) {
-      this.listaFuncionarios = [
-        { id: 10, nome: 'Rafaella Corcini', email: 'rafa@salao.com', cargo: 'Gerente', ativo: true, perfil: 'GERENTE' },
-        { id: 11, nome: 'Ana Souza', email: 'ana@salao.com', cargo: 'Manicure', ativo: true, perfil: 'FUNCIONARIO' },
-        { id: 12, nome: 'Pedro Santos', email: 'pedro@salao.com', cargo: 'Cabelereiro', ativo: false, perfil: 'FUNCIONARIO' }
-      ];
-    }
+    this.agendamentoService.listarTodosUsuarios().subscribe({
+      next: (usuarios) => {
+        // Separa os dados vindos do banco real por tipo
+        this.listaClientes = usuarios.filter(u => u.tipo === 'CLIENTE');
+        this.listaFuncionarios = usuarios.filter(u => u.tipo !== 'CLIENTE');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Erro ao carregar usuários do Java:", err);
+        // Fallback para não quebrar a tela se o Java estiver off
+        this.listaClientes = [];
+        this.listaFuncionarios = [];
+      }
+    });
   }
-
-  // --- LÓGICA DO MODAL (NOVO / EDITAR / SALVAR) ---
 
   abrirModalCadastro(tipo: string) {
     this.perfilCadastro = tipo;
-    // Limpa o formulário para um cadastro novo
     this.usuarioEdicao = {
       id: null, nome: '', email: '', telefone: '', senha: '', cargo: '', ativo: true
     };
@@ -125,10 +106,8 @@ export class FuncionarioComponent implements OnInit {
   }
 
   editarUsuario(usuario: any) {
-    this.perfilCadastro = this.abaAtual === 'FUNCIONARIOS' ? 'FUNCIONARIO' : 'CLIENTE';
-
-    // Cria uma cópia do objeto para não alterar a tabela em tempo real antes de salvar
-    this.usuarioEdicao = { ...usuario, senha: '' }; // Senha vazia
+    this.perfilCadastro = usuario.tipo || (this.abaAtual === 'FUNCIONARIOS' ? 'FUNCIONARIO' : 'CLIENTE');
+    this.usuarioEdicao = { ...usuario, senha: '' }; 
     this.modalAberto = true;
   }
 
@@ -136,94 +115,72 @@ export class FuncionarioComponent implements OnInit {
     this.modalAberto = false;
   }
 
+  // CORREÇÃO: Removido Math.random e adicionado chamada real ao service
   salvarUsuario() {
-    // Validação simples
     if (!this.usuarioEdicao.nome || !this.usuarioEdicao.email) {
       alert('Por favor, preencha nome e email.');
       return;
     }
 
-    console.log('Enviando para o Back-end:', this.usuarioEdicao);
+    this.usuarioEdicao.tipo = this.perfilCadastro;
 
-    // AQUI ENTRARIA A CHAMADA DO SERVIÇO (POST ou PUT)
-    // Exemplo:
-    // this.agendamentoService.salvarUsuario(this.usuarioEdicao).subscribe(...)
+    // Se tiver ID, atualiza. Se não tiver, cadastra novo no banco.
+    const acao = this.usuarioEdicao.id 
+      ? this.agendamentoService.atualizarUsuario(this.usuarioEdicao.id, this.usuarioEdicao)
+      : this.agendamentoService.cadastrarUsuario(this.usuarioEdicao);
 
-    // --- SIMULAÇÃO VISUAL (MOCK) ---
-    if (this.usuarioEdicao.id) {
-      // Editando existente: atualiza na lista local
-      if (this.perfilCadastro === 'CLIENTE') {
-        const index = this.listaClientes.findIndex(c => c.id === this.usuarioEdicao.id);
-        if (index !== -1) this.listaClientes[index] = { ...this.usuarioEdicao };
-      } else {
-        const index = this.listaFuncionarios.findIndex(f => f.id === this.usuarioEdicao.id);
-        if (index !== -1) this.listaFuncionarios[index] = { ...this.usuarioEdicao };
+    acao.subscribe({
+      next: () => {
+        alert('Dados salvos no banco de dados com sucesso!');
+        this.fecharModal();
+        this.carregarUsuariosDoSistema(); // Recarrega a lista vinda do banco
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erro ao salvar no banco. Verifique se o Java está rodando.');
       }
-    } else {
-      // Novo cadastro: adiciona na lista local
-      this.usuarioEdicao.id = Math.floor(Math.random() * 1000); // Gera ID falso
-      if (this.perfilCadastro === 'CLIENTE') {
-        this.listaClientes.push({ ...this.usuarioEdicao });
-      } else {
-        this.listaFuncionarios.push({ ...this.usuarioEdicao });
-      }
-    }
-
-    alert('Salvo com sucesso!');
-    this.fecharModal();
+    });
   }
-
-  // --- LÓGICA DE ATIVAR / DESATIVAR ---
 
   alternarStatus(usuario: any) {
+    if (!usuario.id) return;
     const acao = usuario.ativo ? 'desativar' : 'ativar';
-
+    
     if (confirm(`Tem certeza que deseja ${acao} o usuário ${usuario.nome}?`)) {
-      // AQUI ENTRARIA A CHAMADA DO SERVIÇO
-      // this.agendamentoService.mudarStatus(usuario.id, !usuario.ativo).subscribe(...)
-
-      // Simulação visual:
-      usuario.ativo = !usuario.ativo;
+      this.agendamentoService.alterarStatusUsuario(usuario.id).subscribe({
+        next: () => {
+          this.carregarUsuariosDoSistema(); // Atualiza a lista após mudar o status no banco
+        },
+        error: (err) => alert("Erro ao mudar status no banco.")
+      });
     }
   }
 
-  // --- LÓGICA DE HORÁRIOS (MANTIDA) ---
-
+  // --- MANTIDOS MÉTODOS DE HORÁRIOS E AGENDA ---
+  
   carregarHorariosSalvos() {
     if (!this.usuarioLogado?.id) return;
-
     this.agendamentoService.buscarHorariosTrabalho(this.usuarioLogado.id).subscribe({
       next: (intervalos: any[]) => {
         this.horariosConfigurados = {};
-
         intervalos.forEach(item => {
           const diaNome = this.converterEnumParaDiaNome(item.diaSemana);
-
-          if (!this.horariosConfigurados[diaNome]) {
-            this.horariosConfigurados[diaNome] = [];
-          }
-
+          if (!this.horariosConfigurados[diaNome]) this.horariosConfigurados[diaNome] = [];
           this.preencherSlotsNoIntervalo(diaNome, item.horarioInicio, item.horarioFim);
         });
-
         this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Erro ao carregar horários salvos', err)
+      }
     });
   }
 
   salvarHorarios() {
-    if (!this.usuarioLogado || !this.usuarioLogado.id) return;
-
+    if (!this.usuarioLogado?.id) return;
     let totalSalvo = 0;
-
     for (const diaNome of this.diasSemana) {
       const slots = this.horariosConfigurados[diaNome];
-
       if (slots && slots.length > 0) {
         slots.sort();
         const intervalos = this.converterSlotsEmIntervalos(slots);
-
         intervalos.forEach(intervalo => {
           const dto = {
             idFuncionario: this.usuarioLogado.id,
@@ -231,168 +188,85 @@ export class FuncionarioComponent implements OnInit {
             horarioInicio: intervalo.inicio,
             horarioFim: intervalo.fim
           };
-
-          this.agendamentoService.salvarHorarioTrabalho(dto).subscribe({
-            next: (res) => console.log(`Salvo ${diaNome}: ${intervalo.inicio}-${intervalo.fim}`),
-            error: (err) => console.error('Erro ao salvar', err)
-          });
+          this.agendamentoService.salvarHorarioTrabalho(dto).subscribe();
           totalSalvo++;
         });
       }
     }
-
-    if (totalSalvo > 0 || Object.keys(this.horariosConfigurados).length === 0) {
-      alert('Processamento de horários iniciado.');
-    } else {
-      alert('Nenhum horário selecionado para salvar.');
-    }
+    alert(totalSalvo > 0 ? 'Horários processados!' : 'Nenhum horário selecionado.');
   }
 
-  converterSlotsEmIntervalos(slots: string[]): any[] {
+  private converterSlotsEmIntervalos(slots: string[]): any[] {
     const intervalos = [];
     if (!slots || slots.length === 0) return [];
-
     let inicioAtual = slots[0];
     let ultimoSlot = slots[0];
-
     for (let i = 1; i < slots.length; i++) {
-      const slotAtual = slots[i];
-
-      if (this.saoConsecutivos(ultimoSlot, slotAtual)) {
-        ultimoSlot = slotAtual;
+      if (this.saoConsecutivos(ultimoSlot, slots[i])) {
+        ultimoSlot = slots[i];
       } else {
-        intervalos.push({
-          inicio: inicioAtual,
-          fim: this.adicionar15Min(ultimoSlot)
-        });
-        inicioAtual = slotAtual;
-        ultimoSlot = slotAtual;
+        intervalos.push({ inicio: inicioAtual, fim: this.adicionar15Min(ultimoSlot) });
+        inicioAtual = slots[i];
+        ultimoSlot = slots[i];
       }
     }
-
-    intervalos.push({
-      inicio: inicioAtual,
-      fim: this.adicionar15Min(ultimoSlot)
-    });
-
+    intervalos.push({ inicio: inicioAtual, fim: this.adicionar15Min(ultimoSlot) });
     return intervalos;
   }
 
-  saoConsecutivos(time1: string, time2: string): boolean {
-    const d1 = this.toMinutes(time1);
-    const d2 = this.toMinutes(time2);
-    return (d2 - d1) === 15;
+  private saoConsecutivos = (t1: string, t2: string) => (this.toMinutes(t2) - this.toMinutes(t1)) === 15;
+  private adicionar15Min = (t: string) => {
+    let m = this.toMinutes(t) + 15;
+    return `${Math.floor(m/60).toString().padStart(2,'0')}:${(m%60).toString().padStart(2,'0')}`;
   }
+  private toMinutes = (t: string) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+  private converterDiaNomeParaEnum = (n: string) => ({'Domingo':'DOM','Segunda':'SEG','Terça':'TER','Quarta':'QUA','Quinta':'QUI','Sexta':'SEX','Sábado':'SAB'}[n] || 'SEG');
+  private converterEnumParaDiaNome = (e: string) => ({'DOM':'Domingo','SEG':'Segunda','TER':'Terça','QUA':'Quarta','QUI':'Quinta','SEX':'Sexta','SAB':'Sábado'}[e] || 'Segunda');
 
-  adicionar15Min(time: string): string {
-    let mins = this.toMinutes(time) + 15;
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-  }
-
-  toMinutes(time: string): number {
-    const [h, m] = time.split(':').map(Number);
-    return h * 60 + m;
-  }
-
-  converterDiaNomeParaEnum(nome: string): string {
-    const mapa: { [key: string]: string } = {
-      'Domingo': 'DOM', 'Segunda': 'SEG', 'Terça': 'TER',
-      'Quarta': 'QUA', 'Quinta': 'QUI', 'Sexta': 'SEX', 'Sábado': 'SAB'
-    };
-    return mapa[nome] || 'SEG';
-  }
-
-  converterEnumParaDiaNome(enumVal: string): string {
-    const mapa: { [key: string]: string } = {
-      'DOM': 'Domingo', 'SEG': 'Segunda', 'TER': 'Terça',
-      'QUA': 'Quarta', 'QUI': 'Quinta', 'SEX': 'Sexta', 'SAB': 'Sábado'
-    };
-    return mapa[enumVal] || 'Segunda';
-  }
-
-  preencherSlotsNoIntervalo(dia: string, inicio: string, fim: string) {
-    if (!inicio || !fim) return;
-
-    const inicioLimpo = inicio.substring(0, 5);
-    const fimLimpo = fim.substring(0, 5);
-
-    let [hI, mI] = inicioLimpo.split(':').map(Number);
-    let [hF, mF] = fimLimpo.split(':').map(Number);
-
-    let minutosAtuais = hI * 60 + mI;
-    const minutosFim = hF * 60 + mF;
-
-    if (!this.horariosConfigurados[dia]) {
-      this.horariosConfigurados[dia] = [];
-    }
-
-    while (minutosAtuais < minutosFim) {
-      const h = Math.floor(minutosAtuais / 60);
-      const m = minutosAtuais % 60;
-      const horarioFormatado = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-
-      if (!this.horariosConfigurados[dia].includes(horarioFormatado)) {
-        this.horariosConfigurados[dia].push(horarioFormatado);
-      }
-      minutosAtuais += 15;
+  private preencherSlotsNoIntervalo(dia: string, inicio: string, fim: string) {
+    let minA = this.toMinutes(inicio.substring(0,5));
+    const minF = this.toMinutes(fim.substring(0,5));
+    if (!this.horariosConfigurados[dia]) this.horariosConfigurados[dia] = [];
+    while (minA < minF) {
+      const h = `${Math.floor(minA/60).toString().padStart(2,'0')}:${(minA%60).toString().padStart(2,'0')}`;
+      if (!this.horariosConfigurados[dia].includes(h)) this.horariosConfigurados[dia].push(h);
+      minA += 15;
     }
   }
-
-  // --- LÓGICA DE VISUALIZAÇÃO ---
 
   inicializarDatas() {
-    const hoje = new Date();
-    hoje.setMinutes(hoje.getMinutes() - hoje.getTimezoneOffset());
-    this.dataVisualizacaoAgenda = hoje.toISOString().split('T')[0];
+    this.dataVisualizacaoAgenda = new Date().toISOString().split('T')[0];
   }
 
   carregarAgendaDoProfissional() {
     if (!this.usuarioLogado?.id || !this.dataVisualizacaoAgenda) return;
-
     this.agendamentoService.buscarAgendaDoDia(this.usuarioLogado.id, this.dataVisualizacaoAgenda).subscribe({
       next: (dados) => {
         this.agendaProfissional = dados.sort((a: any, b: any) => a.dataHora.localeCompare(b.dataHora));
         this.cdr.detectChanges();
-      },
-      error: (e) => console.error(e)
+      }
     });
   }
 
-  toggleDiaExpandido(dia: string) {
-    this.diaExpandido = (this.diaExpandido === dia) ? null : dia;
-  }
+  toggleDiaExpandido(dia: string) { this.diaExpandido = (this.diaExpandido === dia) ? null : dia; }
 
   gerarSlotsConfiguracao() {
-    const slots = [];
     for (let h = 8; h <= 18; h++) {
       for (let m = 0; m < 60; m += 15) {
-        slots.push(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
+        this.slotsHorariosConfig.push(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
       }
     }
-    this.slotsHorariosConfig = slots;
   }
 
   toggleHorarioConfig(dia: string, horario: string) {
     if (!this.horariosConfigurados[dia]) this.horariosConfigurados[dia] = [];
-
-    const index = this.horariosConfigurados[dia].indexOf(horario);
-    if (index > -1) {
-      this.horariosConfigurados[dia].splice(index, 1);
-    } else {
-      this.horariosConfigurados[dia].push(horario);
-    }
+    const idx = this.horariosConfigurados[dia].indexOf(horario);
+    idx > -1 ? this.horariosConfigurados[dia].splice(idx, 1) : this.horariosConfigurados[dia].push(horario);
   }
 
-  ehHorarioAtivo(dia: string, horario: string): boolean {
-    return this.horariosConfigurados[dia]?.includes(horario) || false;
-  }
+  ehHorarioAtivo(dia: string, horario: string): boolean { return this.horariosConfigurados[dia]?.includes(horario) || false; }
 
   carregarAreas() {
-    this.agendamentoService.listarAreas().subscribe(d => {
-      this.areas = d;
-      this.cdr.detectChanges();
-    });
+    this.agendamentoService.listarAreas().subscribe(d => { this.areas = d; this.cdr.detectChanges(); });
   }
 }

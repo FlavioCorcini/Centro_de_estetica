@@ -31,7 +31,6 @@ export class HomeComponent implements OnInit {
   observacoesCliente: string = ''; 
   dataMinima: string = '';
 
-  // NOVA VARIÁVEL: Guarda o que volta do Banco de Dados
   agendamentoRealizado: any = null;
 
   constructor(
@@ -67,10 +66,7 @@ export class HomeComponent implements OnInit {
           const [horaSlot, minSlot] = horario.split(':').map(Number);
           const dataSlot = new Date();
           dataSlot.setHours(horaSlot, minSlot, 0);
-          
-          if (dataSlot > agora) {
-            slots.push(horario);
-          }
+          if (dataSlot > agora) slots.push(horario);
         } else {
           slots.push(horario);
         }
@@ -79,10 +75,50 @@ export class HomeComponent implements OnInit {
     this.horariosDisponiveis = slots;
   }
 
+  // PEGA AS ÁREAS DO JAVA
+  carregarAreas() {
+    this.agendamentoService.listarAreas().subscribe({
+      next: (d) => {
+        console.log("Áreas vindas do Banco:", d);
+        this.areas = d;
+        this.cdr.detectChanges();
+      },
+      error: (e) => console.error("Erro: O Java não retornou as Áreas. Verifique o Banco!", e)
+    });
+  }
+
+  // PEGA OS SERVIÇOS DO JAVA
+  carregarServicos(idArea: number) {
+    this.servicos = []; 
+    this.agendamentoService.listarServicosPorArea(idArea).subscribe({
+      next: (d) => {
+        console.log("Serviços vindos do Banco:", d);
+        this.servicos = d;
+        this.cdr.detectChanges();
+      },
+      error: (e) => console.error("Erro ao buscar serviços no banco", e)
+    });
+  }
+
+  // PEGA OS FUNCIONÁRIOS DO JAVA
+  carregarProfissionais() {
+    this.profissionais = [];
+    const idServico = this.servicoSelecionado?.id;
+    if (idServico) {
+      this.agendamentoService.listarFuncionarios(idServico).subscribe({
+        next: (d) => {
+          console.log("Profissionais vindos do Banco:", d);
+          this.profissionais = d;
+          this.cdr.detectChanges();
+        },
+        error: (e) => console.error("Erro ao buscar funcionários no banco", e)
+      });
+    }
+  }
+
   atualizarDisponibilidade() {
     if (!this.dataSelecionada || !this.profissionalSelecionado) return;
     this.gerarGradeHorarios();
-
     const idFunc = this.profissionalSelecionado.id_usuario || this.profissionalSelecionado.id;
     if (!idFunc) return; 
 
@@ -90,8 +126,7 @@ export class HomeComponent implements OnInit {
       next: (d: any) => {
         this.agendamentosOcupados = d;
         this.cdr.detectChanges();
-      },
-      error: (e) => console.error("Erro ao carregar agenda ocupada:", e)
+      }
     });
   }
 
@@ -99,7 +134,6 @@ export class HomeComponent implements OnInit {
     if (!this.agendamentosOcupados || this.agendamentosOcupados.length === 0) return false;
     const [hSlot, mSlot] = horarioSlot.split(':').map(Number);
     const minutosSlot = hSlot * 60 + mSlot;
-
     return this.agendamentosOcupados.some(ag => {
       const horaInicioAg = ag.dataHora.split('T')[1].substring(0, 5);
       const [hInicio, mInicio] = horaInicioAg.split(':').map(Number);
@@ -107,43 +141,6 @@ export class HomeComponent implements OnInit {
       const duracao = parseInt(ag.servico?.tempoAtendimento || ag.servico?.tempo_atendimento || 30);
       return minutosSlot >= minutosInicio && minutosSlot < (minutosInicio + duracao);
     });
-  }
-
-  selecionarHora(h: string) {
-    this.horaSelecionada = h;
-    this.cdr.detectChanges();
-  }
-
-  carregarAreas() {
-    this.agendamentoService.listarAreas().subscribe({
-      next: (d) => {
-        this.areas = d;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  carregarServicos(idArea: number) {
-    this.servicos = []; 
-    this.agendamentoService.listarServicosPorArea(idArea).subscribe({
-      next: (d) => {
-        this.servicos = d;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  carregarProfissionais() {
-    this.profissionais = [];
-    const idServico = this.servicoSelecionado?.id;
-    if (idServico) {
-      this.agendamentoService.listarFuncionarios(idServico).subscribe({
-        next: (d) => {
-          this.profissionais = d;
-          this.cdr.detectChanges();
-        }
-      });
-    }
   }
 
   selecionarArea(area: any) { 
@@ -162,6 +159,11 @@ export class HomeComponent implements OnInit {
     this.profissionalSelecionado = prof;
     this.passoAtual = 4; 
     this.atualizarDisponibilidade(); 
+  }
+
+  selecionarHora(h: string) {
+    this.horaSelecionada = h;
+    this.cdr.detectChanges();
   }
 
   voltar() {
@@ -186,17 +188,11 @@ export class HomeComponent implements OnInit {
 
     this.agendamentoService.finalizarAgendamento(agendamentoDTO).subscribe({
       next: (res: any) => {
-        this.agendamentoRealizado = { 
-          ...res, 
-          status: 'AGENDADO' 
-        };
+        this.agendamentoRealizado = { ...res, status: 'AGENDADO' };
         this.passoAtual = 5;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
-        alert("Erro ao salvar no banco. Verifique se o Java está rodando.");
-      }
+      error: (err) => alert("Erro ao salvar no banco. O Java está ligado?")
     });
   }
 
