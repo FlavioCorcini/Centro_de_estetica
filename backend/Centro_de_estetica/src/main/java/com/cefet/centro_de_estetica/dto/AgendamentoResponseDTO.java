@@ -10,10 +10,11 @@ public class AgendamentoResponseDTO {
     private LocalDateTime dataHora;
     private StatusAgendamento status;
     private String observacoes;
-
+    private ServicoResponseDTO servico;
+    
+    // Apenas nomes para facilitar o front-end
     private String nomeCliente;
     private String nomeFuncionario;
-    private String nomeServico;
 
     public AgendamentoResponseDTO(Agendamento agendamento) {
         this.id = agendamento.getId();
@@ -29,7 +30,7 @@ public class AgendamentoResponseDTO {
             this.nomeFuncionario = agendamento.getFuncionario().getNome();
             
         if (agendamento.getServico() != null) 
-            this.nomeServico = agendamento.getServico().getNome();
+            this.servico = new ServicoResponseDTO(agendamento.getServico());
     }
 
     // Getters e Setters
@@ -45,6 +46,6 @@ public class AgendamentoResponseDTO {
     public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
     public String getNomeFuncionario() { return nomeFuncionario; }
     public void setNomeFuncionario(String nomeFuncionario) { this.nomeFuncionario = nomeFuncionario; }
-    public String getNomeServico() { return nomeServico; }
-    public void setNomeServico(String nomeServico) { this.nomeServico = nomeServico; }
+    public ServicoResponseDTO getServico() { return servico; }
+    public void setServico(ServicoResponseDTO servico) { this.servico = servico; }
 }

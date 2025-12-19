@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { AgendamentoService } from '../services/agendamento.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private agendamentoService: AgendamentoService,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef, 
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -177,8 +179,17 @@ export class HomeComponent implements OnInit {
 
   finalizarAgendamento() {
     const idFunc = this.profissionalSelecionado?.id_usuario || this.profissionalSelecionado?.id;
+
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuario') || '{}');
+  const idClienteLogado = usuarioLogado.id;
+
+  if (!idClienteLogado) {
+    alert("Erro: Usuário não identificado. Por favor, faça login novamente.");
+    this.router.navigate(['/login']);
+    return;
+  }
     const agendamento = {
-      idCliente: 5, 
+      idCliente: idClienteLogado, 
       idFuncionario: idFunc, 
       idServico: this.servicoSelecionado.id,
       dataHora: `${this.dataSelecionada}T${this.horaSelecionada}:00`, 

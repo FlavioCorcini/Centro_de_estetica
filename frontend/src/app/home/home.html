@@ -52,7 +52,7 @@
           <div class="servico-info">
             <h3>{{ servico.nome }}</h3>
             <p>{{ servico.descricao }}</p>
-            <small>⏱ {{ servico.tempo_atendimento || servico.tempoAtendimento }}</small>
+            <small>⏱ {{ servico.tempoAtendimento }} min</small>
           </div>
           <div class="servico-preco">{{ servico.valor | currency:'BRL' }}</div>
         </div>
