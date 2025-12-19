@@ -76,6 +76,14 @@ public class UsuarioService {
 	public Optional<UsuarioResponseDTO> buscarPorId(Long id) {
 		return repository.findById(id).map(mapper::toResponseDTO);
 	}
+	
+	public List<UsuarioResponseDTO> buscarProfissionaisPorParteDoNome(String nome) {
+	    // Busca apenas usuários do tipo FUNCIONARIO que contenham o nome informado
+	    return repository.findByNomeContainingIgnoreCaseAndTipo(nome, TipoUsuario.FUNCIONARIO)
+	            .stream()
+	            .map(mapper::toResponseDTO)
+	            .collect(Collectors.toList());
+	}
 
 	public Optional<UsuarioResponseDTO> buscarPorEmail(String email) {
 		return repository.findByEmail(email).map(mapper::toResponseDTO);

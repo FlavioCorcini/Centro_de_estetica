@@ -70,6 +70,13 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
+    // /usuarios/buscar-nome?nome=${nome} funciona para pedaacos do nome e não é case sensitivity
+    @GetMapping("/buscar-nome")
+    public ResponseEntity<List<UsuarioResponseDTO>> buscarPorNome(@RequestParam String nome) {
+        List<UsuarioResponseDTO> resultados = service.buscarProfissionaisPorParteDoNome(nome);
+        return ResponseEntity.ok(resultados);
+    }
+    
     @GetMapping("/verificar-email")
     public ResponseEntity<Boolean> verificarEmail(@RequestParam String email) {
         boolean existe = service.verificarSeEmailExiste(email); // Ou chame o repository direto se preferir

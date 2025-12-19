@@ -18,4 +18,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     List<Usuario> findByServicos_Id(Long id);
     
     List<Usuario> findByTipo(TipoUsuario tipo);
+    
+    List<Usuario> findByNomeContainingIgnoreCaseAndTipo(String nome, TipoUsuario tipo);
 }
