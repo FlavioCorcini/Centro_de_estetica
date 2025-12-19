@@ -19,11 +19,8 @@
           </div>
           <div class="detalhes">
             <h3>{{ ag.nomeServico || 'Serviço Personalizado' }}</h3>
-            
             <p>👤 <strong>Profissional:</strong> {{ ag.nomeFuncionario || 'Sem preferência' }}</p>
-            
             <p>⏰ <strong>Horário:</strong> {{ ag.dataHora | date:'HH:mm' }}h</p>
-            
             <p *ngIf="ag.observacoes" class="obs-text">
               📝 <em>"{{ ag.observacoes }}"</em>
             </p>
@@ -34,7 +31,6 @@
           <span class="badge-status" [ngClass]="getStatusClass(ag.status)">
             {{ ag.status || 'PENDENTE' }}
           </span>
-          
           <button *ngIf="ag.status !== 'CANCELADO' && ag.status !== 'CONCLUIDO'" 
                   (click)="cancelar(ag.id)" 
                   class="btn-cancelar">
@@ -46,7 +42,7 @@
 
     <div *ngIf="!carregando && listaAgendamentos.length === 0" class="empty-state">
       <p>Você ainda não possui agendamentos marcados.</p>
-      <button class="btn-proximo" routerLink="/home">Agendar Agora</button>
+      <button class="btn-proximo" (click)="irParaAgendar()">Agendar Agora</button>
     </div>
   </div>
 </div>
