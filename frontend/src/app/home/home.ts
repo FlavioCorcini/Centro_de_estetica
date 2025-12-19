@@ -26,6 +26,10 @@ export class HomeComponent implements OnInit {
   profissionalSelecionado: any = null;
   dataSelecionada: string = '';
   horaSelecionada: string = '';
+  
+  // NOVAS VARIÁVEIS
+  observacoesCliente: string = ''; 
+  dataMinima: string = '';
 
   constructor(
     private agendamentoService: AgendamentoService,
@@ -34,14 +38,40 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarAreas();
+    this.definirDataMinima();
     this.gerarGradeHorarios();
+  }
+
+  // Define a data mínima como HOJE para o calendário
+  definirDataMinima() {
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = hoje.getFullYear();
+    this.dataMinima = `${ano}-${mes}-${dia}`;
   }
 
   gerarGradeHorarios() {
     const slots = [];
+    const agora = new Date();
+    const hojeFormatado = this.dataMinima;
+
     for (let h = 8; h <= 18; h++) {
       for (let m = 0; m < 60; m += 15) {
-        slots.push(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
+        const horario = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+        
+        // Se a data selecionada for hoje, ignora horários que já passaram
+        if (this.dataSelecionada === hojeFormatado) {
+          const [horaSlot, minSlot] = horario.split(':').map(Number);
+          const dataSlot = new Date();
+          dataSlot.setHours(horaSlot, minSlot, 0);
+          
+          if (dataSlot > agora) {
+            slots.push(horario);
+          }
+        } else {
+          slots.push(horario);
+        }
       }
     }
     this.horariosDisponiveis = slots;
@@ -49,8 +79,12 @@ export class HomeComponent implements OnInit {
 
   atualizarDisponibilidade() {
     if (!this.dataSelecionada || !this.profissionalSelecionado) return;
+    
+    // Sempre que mudar a data, regera a grade para filtrar horários passados se for HOJE
+    this.gerarGradeHorarios();
+
     const idFunc = this.profissionalSelecionado.id_usuario || this.profissionalSelecionado.id;
-    if (!idFunc) return; 
+    if (!idFunc || idFunc === null) return; 
 
     this.agendamentoService.buscarAgendaDoDia(idFunc, this.dataSelecionada).subscribe({
       next: (d: any) => {
@@ -148,7 +182,7 @@ export class HomeComponent implements OnInit {
       idFuncionario: idFunc, 
       idServico: this.servicoSelecionado.id,
       dataHora: `${this.dataSelecionada}T${this.horaSelecionada}:00`, 
-      observacoes: "Agendado via Web"
+      observacoes: this.observacoesCliente || "Sem observações"
     };
 
     this.agendamentoService.finalizarAgendamento(agendamento).subscribe({
@@ -167,6 +201,7 @@ export class HomeComponent implements OnInit {
     this.profissionalSelecionado = null;
     this.dataSelecionada = '';
     this.horaSelecionada = '';
+    this.observacoesCliente = '';
     this.agendamentosOcupados = [];
     this.cdr.detectChanges();
     

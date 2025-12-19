@@ -6,6 +6,7 @@
     </div>
 
     <div *ngIf="carregando" class="loading-box">
+      <div class="spinner"></div>
       <p>Carregando seus agendamentos...</p>
     </div>
 
@@ -17,9 +18,15 @@
             <span class="mes">{{ ag.dataHora | date:'MMM' }}</span>
           </div>
           <div class="detalhes">
-            <h3>{{ ag.servico?.nome }}</h3>
-            <p>👤 Profissional: {{ ag.funcionario?.nome || 'Não informado' }}</p>
-            <p>⏰ Horário: {{ ag.dataHora | date:'HH:mm' }}h</p>
+            <h3>{{ ag.nomeServico || 'Serviço Personalizado' }}</h3>
+            
+            <p>👤 <strong>Profissional:</strong> {{ ag.nomeFuncionario || 'Sem preferência' }}</p>
+            
+            <p>⏰ <strong>Horário:</strong> {{ ag.dataHora | date:'HH:mm' }}h</p>
+            
+            <p *ngIf="ag.observacoes" class="obs-text">
+              📝 <em>"{{ ag.observacoes }}"</em>
+            </p>
           </div>
         </div>
 
@@ -38,8 +45,8 @@
     </div>
 
     <div *ngIf="!carregando && listaAgendamentos.length === 0" class="empty-state">
-      <p>Você ainda não possui agendamentos.</p>
-      <button class="btn-proximo" onclick="window.location.href='/home'">Agendar Agora</button>
+      <p>Você ainda não possui agendamentos marcados.</p>
+      <button class="btn-proximo" routerLink="/home">Agendar Agora</button>
     </div>
   </div>
 </div>

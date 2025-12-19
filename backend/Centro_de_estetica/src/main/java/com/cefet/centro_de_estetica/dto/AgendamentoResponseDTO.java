@@ -11,7 +11,6 @@ public class AgendamentoResponseDTO {
     private StatusAgendamento status;
     private String observacoes;
 
-    // Apenas nomes para facilitar o front-end
     private String nomeCliente;
     private String nomeFuncionario;
     private String nomeServico;

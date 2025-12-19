@@ -13,7 +13,7 @@ export class MeusAgendamentosComponent implements OnInit {
 
   listaAgendamentos: any[] = [];
   carregando: boolean = true;
-  idCliente: number = 5; // ID fixo para teste, conforme seu home.ts
+  idCliente: number = 5; 
 
   constructor(
     private agendamentoService: AgendamentoService,
@@ -26,13 +26,19 @@ export class MeusAgendamentosComponent implements OnInit {
 
   carregarHistorico() {
     this.carregando = true;
-    // Assume que você tem esse método no agendamento.service.ts
     this.agendamentoService.listarPorCliente(this.idCliente).subscribe({
       next: (dados) => {
-        // Ordena por data (mais recentes primeiro)
-        this.listaAgendamentos = dados.sort((a: any, b: any) => 
+        const dadosTratados = dados.map((ag: any) => {
+          if (ag.status?.toUpperCase() === 'PENDENTE') {
+            return { ...ag, status: 'AGENDADO' };
+          }
+          return ag;
+        });
+
+        this.listaAgendamentos = dadosTratados.sort((a: any, b: any) => 
           new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime()
         );
+
         this.carregando = false;
         this.cdr.detectChanges();
       },
@@ -44,13 +50,18 @@ export class MeusAgendamentosComponent implements OnInit {
   }
 
   cancelar(idAgendamento: number) {
+    if (!idAgendamento) return;
+
     if (confirm("Tem certeza que deseja cancelar este agendamento?")) {
       this.agendamentoService.cancelarAgendamento(idAgendamento).subscribe({
         next: () => {
           alert("Agendamento cancelado com sucesso!");
-          this.carregarHistorico(); // Recarrega a lista
+          this.carregarHistorico(); 
         },
-        error: (err) => alert("Erro ao cancelar agendamento.")
+        error: (err) => {
+          console.error(err);
+          alert("Erro ao cancelar agendamento.");
+        }
       });
     }
   }
@@ -58,6 +69,7 @@ export class MeusAgendamentosComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status?.toUpperCase()) {
       case 'CONCLUIDO': return 'status-verde';
+      case 'AGENDADO': return 'status-verde';
       case 'CANCELADO': return 'status-vermelho';
       default: return 'status-amarelo';
     }

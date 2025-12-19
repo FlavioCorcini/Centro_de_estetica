@@ -23,7 +23,6 @@ import com.cefet.centro_de_estetica.dto.AgendamentoResponseDTO;
 import com.cefet.centro_de_estetica.dto.AtualizacaoStatusDTO;
 import com.cefet.centro_de_estetica.service.AgendamentoService;
 
-
 @RestController
 @RequestMapping("/agendamentos")
 @CrossOrigin("*") 
@@ -71,8 +70,6 @@ public class AgendamentoController {
         return ResponseEntity.ok(service.buscarPorData(data));
     }
 
-    // O método PUT (atualizar) foi removido temporariamente para o sistema compilar
-    // Se você precisar dele, avise para eu escrever a versão segura para o Service.
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> atualizarStatus(

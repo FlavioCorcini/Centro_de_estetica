@@ -15,9 +15,4 @@ public class AgendamentoMapper {
         return new AgendamentoResponseDTO(agendamento);
     }
 
-    /* Nota: Não criamos o método 'toEntity' aqui (DTO -> Entidade) 
-       porque o Agendamento depende de buscar Cliente, Funcionário e Serviço no Banco de Dados.
-       Fazer isso no Mapper exigiria injetar Repositories aqui, o que deixaria o código acoplado.
-       Por isso, a montagem da Entidade Agendamento fica no Service.
-    */
 }

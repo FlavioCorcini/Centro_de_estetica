@@ -66,13 +66,6 @@
         <p>Serviço: <strong>{{ servicoSelecionado?.nome }}</strong></p>
       </div>
       <div class="grid-profissionais">
-        <div class="card-profissional" (click)="selecionarProfissional({id: null, nome: 'Sem preferência'})">
-          <div class="avatar">?</div>
-          <div class="info">
-            <h3>Sem preferência</h3>
-            <p>Primeiro horário livre</p>
-          </div>
-        </div>
         <div *ngFor="let prof of profissionais" class="card-profissional" (click)="selecionarProfissional(prof)">
           <div class="avatar">👤</div>
           <div class="info">
@@ -94,6 +87,7 @@
         <div class="input-group">
           <label>Data:</label>
           <input type="date" name="data" [(ngModel)]="dataSelecionada" 
+                 [min]="dataMinima"
                  (change)="atualizarDisponibilidade()" class="custom-input">
         </div>
 
@@ -113,6 +107,18 @@
           <small class="info-legenda" *ngIf="dataSelecionada">
             <span class="cor-ocupado"></span> Horário Indisponível
           </small>
+        </div>
+
+        <div class="input-group" style="margin-top: 20px;">
+          <label>Observações para o profissional:</label>
+          <textarea 
+            [(ngModel)]="observacoesCliente" 
+            name="observacoes" 
+            class="custom-input" 
+            style="resize: none;"
+            placeholder="Ex: Tenho preferência por tal produto ou restrição a..."
+            rows="3">
+          </textarea>
         </div>
       </div>
 
