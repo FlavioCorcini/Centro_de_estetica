@@ -3,43 +3,39 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-body {
-    font-family: 'Poppins', sans-serif;
+/* 1. Configurações Globais e Fundo de Mármore */
+html, body {
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
 }
 
-/* Fundo Mármore */
+body {
+    /* Cor base para evitar tela branca no carregamento */
+    background-color: #f7f7f7;
+
+    /* A imagem de fundo marmore */
+    background-image: url('assets/images/marmore.jpg');
+    
+    /* Configurações para o fundo preencher a tela sem repetir */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* 2. Layout da Página de Login */
 .login-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background: transparent; 
 }
 
-/* Estilo Global para o Fundo */
-body {
-    /* Define a cor base (caso a imagem demore a carregar) */
-    background-color: #f7f7f7;
-
-    /* A imagem de fundo (usando a mesma textura de mármore do login) */
-    background-image: url('assets/images/marmore.jpg');
-    
-    /* 3. Faz o fundo cobrir tudo ou repetir (para texturas, repeat é melhor) */
-    background-size: cover;
-
-    /* Deixa o fundo "travado" enquanto a tela rola */
-    background-attachment: fixed;
-
-    /* Configuração de fonte global */
-    font-family: 'Poppins', 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh; /* Garante que o body ocupe 100% da altura */
-}
-
-/* Imagem de Perfil Quadrada com bordas arredondadas */
+/* 3. Imagem de Perfil */
 .profile-img {
     width: 90px;
     height: 90px;
@@ -47,15 +43,16 @@ body {
     border-radius: 15px; 
 }
 
-/* Card customizado */
+/* 4. Cards de Interface (Login, Agendamento, etc) */
 .login-card {
     width: 100%;
     max-width: 420px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.95); /* Leve transparência */
+    background: rgba(255, 255, 255, 0.95); 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* Inputs "Clean" */
+/* 5. Inputs e Formulários */
 .input-group-text {
     border-color: #e0e0e0;
 }
@@ -75,7 +72,7 @@ body {
     font-size: 0.85rem;
 }
 
-/* Botão Preto Personalizado */
+/* 6. Botões Personalizados */
 .btn-black {
     background-color: #000;
     color: #fff;
@@ -90,6 +87,7 @@ body {
     transform: translateY(-1px);
 }
 
+/* 7. Utilitários */
 .x-small {
     font-size: 0.75rem;
 }
