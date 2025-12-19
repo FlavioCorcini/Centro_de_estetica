@@ -79,18 +79,15 @@ export class FuncionarioComponent implements OnInit {
     }
   }
 
-  // CORREÇÃO: Agora busca do AgendamentoService que é o seu único service de banco
   carregarUsuariosDoSistema() {
     this.agendamentoService.listarTodosUsuarios().subscribe({
       next: (usuarios) => {
-        // Separa os dados vindos do banco real por tipo
         this.listaClientes = usuarios.filter(u => u.tipo === 'CLIENTE');
         this.listaFuncionarios = usuarios.filter(u => u.tipo !== 'CLIENTE');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("Erro ao carregar usuários do Java:", err);
-        // Fallback para não quebrar a tela se o Java estiver off
         this.listaClientes = [];
         this.listaFuncionarios = [];
       }
@@ -115,7 +112,6 @@ export class FuncionarioComponent implements OnInit {
     this.modalAberto = false;
   }
 
-  // CORREÇÃO: Removido Math.random e adicionado chamada real ao service
   salvarUsuario() {
     if (!this.usuarioEdicao.nome || !this.usuarioEdicao.email) {
       alert('Por favor, preencha nome e email.');
@@ -124,7 +120,6 @@ export class FuncionarioComponent implements OnInit {
 
     this.usuarioEdicao.tipo = this.perfilCadastro;
 
-    // Se tiver ID, atualiza. Se não tiver, cadastra novo no banco.
     const acao = this.usuarioEdicao.id 
       ? this.agendamentoService.atualizarUsuario(this.usuarioEdicao.id, this.usuarioEdicao)
       : this.agendamentoService.cadastrarUsuario(this.usuarioEdicao);
@@ -133,7 +128,7 @@ export class FuncionarioComponent implements OnInit {
       next: () => {
         alert('Dados salvos no banco de dados com sucesso!');
         this.fecharModal();
-        this.carregarUsuariosDoSistema(); // Recarrega a lista vinda do banco
+        this.carregarUsuariosDoSistema(); 
       },
       error: (err) => {
         console.error(err);
@@ -144,19 +139,21 @@ export class FuncionarioComponent implements OnInit {
 
   alternarStatus(usuario: any) {
     if (!usuario.id) return;
-    const acao = usuario.ativo ? 'desativar' : 'ativar';
+    const acaoTexto = usuario.ativo ? 'desativar' : 'ativar';
     
-    if (confirm(`Tem certeza que deseja ${acao} o usuário ${usuario.nome}?`)) {
+    if (confirm(`Tem certeza que deseja ${acaoTexto} o usuário ${usuario.nome}?`)) {
       this.agendamentoService.alterarStatusUsuario(usuario.id).subscribe({
         next: () => {
-          this.carregarUsuariosDoSistema(); // Atualiza a lista após mudar o status no banco
+          this.carregarUsuariosDoSistema(); 
         },
-        error: (err) => alert("Erro ao mudar status no banco.")
+        error: (err) => {
+          console.error(err);
+          alert("Erro ao mudar status no banco.");
+        }
       });
     }
   }
 
-  // --- MANTIDOS MÉTODOS DE HORÁRIOS E AGENDA ---
   
   carregarHorariosSalvos() {
     if (!this.usuarioLogado?.id) return;

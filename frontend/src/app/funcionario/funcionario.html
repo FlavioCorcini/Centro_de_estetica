@@ -1,298 +1,273 @@
 <div class="container py-4">
 
-    <div class="d-flex gap-2 mb-4 overflow-auto pb-2">
-        <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'AGENDAMENTOS'"
-            [class.btn-outline-secondary]="abaAtual !== 'AGENDAMENTOS'" (click)="mudarAba('AGENDAMENTOS')">
-            <i class="bi bi-calendar-check me-2"></i> Meus Agendamentos
-        </button>
+  <div class="d-flex gap-2 mb-4 overflow-auto pb-2">
+    <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'AGENDAMENTOS'"
+      [class.btn-outline-secondary]="abaAtual !== 'AGENDAMENTOS'" (click)="mudarAba('AGENDAMENTOS')">
+      <i class="bi bi-calendar-check me-2"></i> Meus Agendamentos
+    </button>
 
-        <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'HORARIOS'"
-            [class.btn-outline-secondary]="abaAtual !== 'HORARIOS'" (click)="mudarAba('HORARIOS')">
-            <i class="bi bi-clock me-2"></i> Configurar Horários
-        </button>
+    <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'HORARIOS'"
+      [class.btn-outline-secondary]="abaAtual !== 'HORARIOS'" (click)="mudarAba('HORARIOS')">
+      <i class="bi bi-clock me-2"></i> Configurar Horários
+    </button>
 
-        <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'AREAS'"
-            [class.btn-outline-secondary]="abaAtual !== 'AREAS'" (click)="mudarAba('AREAS')">
-            <i class="bi bi-grid me-2"></i> Áreas
-        </button>
+    <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'AREAS'"
+      [class.btn-outline-secondary]="abaAtual !== 'AREAS'" (click)="mudarAba('AREAS')">
+      <i class="bi bi-grid me-2"></i> Áreas
+    </button>
 
-        <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'SERVICOS'"
-            [class.btn-outline-secondary]="abaAtual !== 'SERVICOS'" (click)="mudarAba('SERVICOS')">
-            <i class="bi bi-scissors me-2"></i> Serviços
-        </button>
+    <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'SERVICOS'"
+      [class.btn-outline-secondary]="abaAtual !== 'SERVICOS'" (click)="mudarAba('SERVICOS')">
+      <i class="bi bi-scissors me-2"></i> Serviços
+    </button>
 
-        <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'USUARIOS'"
-            [class.btn-outline-secondary]="abaAtual !== 'USUARIOS'" (click)="mudarAba('USUARIOS')">
-            <i class="bi bi-people me-2"></i> Clientes
-        </button>
+    <button class="btn rounded-pill px-4" [class.btn-dark]="abaAtual === 'USUARIOS'"
+      [class.btn-outline-secondary]="abaAtual !== 'USUARIOS'" (click)="mudarAba('USUARIOS')">
+      <i class="bi bi-people me-2"></i> Clientes
+    </button>
 
-        <button *ngIf="tipo === 'GERENTE' || tipo === 'ADMIN'" class="btn rounded-pill px-4"
-            [class.btn-dark]="abaAtual === 'FUNCIONARIOS'" [class.btn-outline-secondary]="abaAtual !== 'FUNCIONARIOS'"
-            (click)="mudarAba('FUNCIONARIOS')">
-            <i class="bi bi-person-badge me-2"></i> Funcionários
-        </button>
-    </div>
+    <button *ngIf="tipo === 'GERENTE' || tipo === 'ADMIN'" class="btn rounded-pill px-4"
+      [class.btn-dark]="abaAtual === 'FUNCIONARIOS'" [class.btn-outline-secondary]="abaAtual !== 'FUNCIONARIOS'"
+      (click)="mudarAba('FUNCIONARIOS')">
+      <i class="bi bi-person-badge me-2"></i> Funcionários
+    </button>
+  </div>
 
-    <div class="card shadow-sm border-0" style="min-height: 500px;">
-        <div class="card-body p-4">
+  <div class="card shadow-sm border-0" style="min-height: 500px;">
+    <div class="card-body p-4">
 
-            <div *ngIf="abaAtual === 'AGENDAMENTOS'">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="card-title fw-bold m-0">Meus Agendamentos</h3>
-                    <div class="d-flex align-items-center gap-2">
-                        <label class="fw-bold">Data:</label>
-                        <input type="date" [(ngModel)]="dataVisualizacaoAgenda"
-                            (change)="carregarAgendaDoProfissional()" class="form-control form-control-sm"
-                            style="width: auto;">
-                    </div>
-                </div>
-
-                <div class="list-group list-group-flush">
-                    <div *ngFor="let ag of agendaProfissional"
-                        class="list-group-item d-flex align-items-center py-3 border-bottom">
-                        <div class="text-center me-4 pe-4 border-end">
-                            <strong class="d-block fs-5">{{ ag.dataHora | date:'HH:mm' }}</strong>
-                            <small class="text-muted">{{ ag.servico?.tempoAtendimento || 30 }} min</small>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-1 fw-bold">{{ ag.nomeCliente || 'Cliente' }}</h5>
-                            <span class="badge bg-light text-dark border">{{ ag.servico?.nome }}</span>
-                            <p class="text-muted small mt-1 mb-0 fst-italic" *ngIf="ag.observacoes">
-                                <i class="bi bi-chat-right-text me-1"></i> {{ ag.observacoes }}
-                            </p>
-                        </div>
-                        <div>
-                            <span class="badge bg-success rounded-pill px-3 py-2">Confirmado</span>
-                        </div>
-                    </div>
-
-                    <div *ngIf="agendaProfissional.length === 0" class="text-center py-5 text-muted">
-                        <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
-                        <p>Nenhum agendamento encontrado para esta data.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div *ngIf="abaAtual === 'HORARIOS'">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3 class="fw-bold">Horários Padrão</h3>
-                        <p class="text-muted mb-0">Configure sua disponibilidade semanal.</p>
-                    </div>
-                    <button class="btn btn-dark" (click)="salvarHorarios()">
-                        <i class="bi bi-save me-2"></i> Salvar Alterações
-                    </button>
-                </div>
-
-                <div class="accordion" id="accordionHorarios">
-                    <div *ngFor="let dia of diasSemana; let i = index"
-                        class="accordion-item mb-2 border rounded overflow-hidden shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" [class.collapsed]="diaExpandido !== dia" type="button"
-                                (click)="toggleDiaExpandido(dia)">
-                                <span class="fw-bold">{{ dia }}</span>
-                            </button>
-                        </h2>
-                        <div class="accordion-collapse collapse" [class.show]="diaExpandido === dia">
-                            <div class="accordion-body bg-light">
-                                <p class="small text-muted mb-3">Selecione os blocos de 15 minutos disponíveis:</p>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <button *ngFor="let slot of slotsHorariosConfig" class="btn btn-sm"
-                                        style="width: 80px;" [class.btn-dark]="ehHorarioAtivo(dia, slot)"
-                                        [class.btn-outline-secondary]="!ehHorarioAtivo(dia, slot)"
-                                        [class.fw-bold]="ehHorarioAtivo(dia, slot)"
-                                        (click)="toggleHorarioConfig(dia, slot)">
-                                        {{ slot }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div *ngIf="abaAtual === 'AREAS'">
-                <h3 class="text-muted">Gerenciar Áreas</h3>
-                <p>Em desenvolvimento.</p>
-            </div>
-
-            <div *ngIf="abaAtual === 'SERVICOS'" class="text-center py-5">
-                <h3 class="text-muted">Gerenciar Serviços</h3>
-                <p>Em desenvolvimento.</p>
-            </div>
-
-            <div *ngIf="abaAtual === 'USUARIOS'">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                    <div>
-                        <h3 class="fw-bold m-0">Gerenciar Clientes</h3>
-                        <p class="text-muted small mb-0">Listagem de clientes cadastrados.</p>
-                    </div>
-                    <button class="btn btn-success rounded-pill px-4" (click)="abrirModalCadastro('CLIENTE')">
-                        <i class="bi bi-plus-lg me-2"></i> Novo Cliente
-                    </button>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3 rounded-start">Nome</th>
-                                <th>Email</th>
-                                <th>Telefone</th>
-                                <th>Status</th>
-                                <th class="text-center rounded-end">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let cliente of listaClientes">
-                                <td class="ps-3 fw-bold">{{ cliente.nome }}</td>
-                                <td class="text-muted">{{ cliente.email }}</td>
-                                <td>{{ cliente.telefone || '-' }}</td>
-                                <td>
-                                    <span class="badge rounded-pill"
-                                        [ngClass]="cliente.ativo ? 'bg-success' : 'bg-secondary'">
-                                        {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary me-2" (click)="editarUsuario(cliente)"
-                                        title="Editar">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-
-                                    <button class="btn btn-sm"
-                                        [ngClass]="cliente.ativo ? 'btn-outline-danger' : 'btn-outline-success'"
-                                        (click)="alternarStatus(cliente)" title="Desativar/Ativar">
-                                        <i class="bi"
-                                            [ngClass]="cliente.ativo ? 'bi-person-slash' : 'bi-check-circle'"></i>
-
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr *ngIf="listaClientes.length === 0">
-                                <td colspan="5" class="text-center py-4 text-muted">Nenhum cliente encontrado.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div *ngIf="abaAtual === 'FUNCIONARIOS'">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                    <div>
-                        <h3 class="fw-bold m-0">Gerenciar Funcionários</h3>
-                        <p class="text-muted small mb-0">Controle da equipe.</p>
-                    </div>
-                    <button class="btn btn-dark rounded-pill px-4" (click)="abrirModalCadastro('FUNCIONARIO')">
-                        <i class="bi bi-person-plus-fill me-2"></i> Novo Funcionário
-                    </button>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3 rounded-start">Nome</th>
-                                <th>Cargo</th>
-                                <th>Status</th>
-                                <th class="text-center rounded-end">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let func of listaFuncionarios">
-                                <td class="ps-3 fw-bold">{{ func.nome }}</td>
-                                <td>{{ func.cargo || 'Funcionário' }}</td>
-                                <td>
-                                    <span class="badge rounded-pill"
-                                        [ngClass]="func.ativo ? 'bg-success' : 'bg-secondary'">
-                                        {{ func.ativo ? 'Ativo' : 'Inativo' }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary me-2" (click)="editarUsuario(func)">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-
-                                    <button class="btn btn-sm"
-                                        [ngClass]="func.ativo ? 'btn-outline-danger' : 'btn-outline-success'"
-                                        (click)="alternarStatus(func)">
-                                        <i class="bi"
-                                            [ngClass]="func.ativo ? 'bi-person-slash' : 'bi-check-circle'"></i>
-
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr *ngIf="listaFuncionarios.length === 0">
-                                <td colspan="4" class="text-center py-4 text-muted">Nenhum funcionário encontrado.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+      <div *ngIf="abaAtual === 'AGENDAMENTOS'">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="card-title fw-bold m-0">Meus Agendamentos</h3>
+          <div class="d-flex align-items-center gap-2">
+            <label class="fw-bold">Data:</label>
+            <input type="date" [(ngModel)]="dataVisualizacaoAgenda" (change)="carregarAgendaDoProfissional()"
+              class="form-control form-control-sm" style="width: auto;">
+          </div>
         </div>
+
+        <div class="list-group list-group-flush">
+          <div *ngFor="let ag of agendaProfissional" class="list-group-item d-flex align-items-center py-3 border-bottom">
+            <div class="text-center me-4 pe-4 border-end">
+              <strong class="d-block fs-5">{{ ag.dataHora | date:'HH:mm' }}</strong>
+              <small class="text-muted">{{ ag.servico?.tempoAtendimento || 30 }} min</small>
+            </div>
+            <div class="flex-grow-1">
+              <h5 class="mb-1 fw-bold">{{ ag.nomeCliente || 'Cliente' }}</h5>
+              <span class="badge bg-light text-dark border">{{ ag.servico?.nome }}</span>
+              <p class="text-muted small mt-1 mb-0 fst-italic" *ngIf="ag.observacoes">
+                <i class="bi bi-chat-right-text me-1"></i> {{ ag.observacoes }}
+              </p>
+            </div>
+            <div>
+              <span class="badge bg-success rounded-pill px-3 py-2">Confirmado</span>
+            </div>
+          </div>
+
+          <div *ngIf="agendaProfissional.length === 0" class="text-center py-5 text-muted">
+            <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+            <p>Nenhum agendamento encontrado para esta data.</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="abaAtual === 'HORARIOS'">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h3 class="fw-bold">Horários Padrão</h3>
+            <p class="text-muted mb-0">Configure sua disponibilidade semanal.</p>
+          </div>
+          <button class="btn btn-dark" (click)="salvarHorarios()">
+            <i class="bi bi-save me-2"></i> Salvar Alterações
+          </button>
+        </div>
+
+        <div class="accordion" id="accordionHorarios">
+          <div *ngFor="let dia of diasSemana" class="accordion-item mb-2 border rounded overflow-hidden shadow-sm">
+            <h2 class="accordion-header">
+              <button class="accordion-button" [class.collapsed]="diaExpandido !== dia" type="button"
+                (click)="toggleDiaExpandido(dia)">
+                <span class="fw-bold">{{ dia }}</span>
+              </button>
+            </h2>
+            <div class="accordion-collapse collapse" [class.show]="diaExpandido === dia">
+              <div class="accordion-body bg-light">
+                <p class="small text-muted mb-3">Selecione os blocos de 15 minutos disponíveis:</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <button *ngFor="let slot of slotsHorariosConfig" class="btn btn-sm" style="width: 80px;"
+                    [class.btn-dark]="ehHorarioAtivo(dia, slot)"
+                    [class.btn-outline-secondary]="!ehHorarioAtivo(dia, slot)"
+                    (click)="toggleHorarioConfig(dia, slot)">
+                    {{ slot }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="abaAtual === 'USUARIOS'">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div>
+            <h3 class="fw-bold m-0">Gerenciar Clientes</h3>
+            <p class="text-muted small mb-0">Listagem de clientes cadastrados no banco.</p>
+          </div>
+          <button class="btn btn-success rounded-pill px-4" (click)="abrirModalCadastro('CLIENTE')">
+            <i class="bi bi-plus-lg me-2"></i> Novo Cliente
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3 rounded-start">Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Status</th>
+                <th class="text-center rounded-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cliente of listaClientes">
+                <td class="ps-3 fw-bold">{{ cliente.nome }}</td>
+                <td class="text-muted">{{ cliente.email }}</td>
+                <td>{{ cliente.telefone || '-' }}</td>
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="cliente.ativo ? 'bg-success' : 'bg-secondary'">
+                    {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="editarUsuario(cliente)" title="Editar">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-sm" [ngClass]="cliente.ativo ? 'btn-outline-danger' : 'btn-outline-success'"
+                    (click)="alternarStatus(cliente)" [title]="cliente.ativo ? 'Desativar' : 'Ativar'">
+                    <i class="bi" [ngClass]="cliente.ativo ? 'bi-person-slash' : 'bi-check-circle'"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="listaClientes.length === 0">
+                <td colspan="5" class="text-center py-4 text-muted">Buscando clientes no banco de dados...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="abaAtual === 'FUNCIONARIOS'">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div>
+            <h3 class="fw-bold m-0">Gerenciar Funcionários</h3>
+            <p class="text-muted small mb-0">Controle da equipe ativa.</p>
+          </div>
+          <button class="btn btn-dark rounded-pill px-4" (click)="abrirModalCadastro('FUNCIONARIO')">
+            <i class="bi bi-person-plus-fill me-2"></i> Novo Funcionário
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3 rounded-start">Nome</th>
+                <th>Cargo</th>
+                <th>Status</th>
+                <th class="text-center rounded-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let func of listaFuncionarios">
+                <td class="ps-3 fw-bold">{{ func.nome }}</td>
+                <td>{{ func.cargo || 'Funcionário' }}</td>
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="func.ativo ? 'bg-success' : 'bg-secondary'">
+                    {{ func.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="editarUsuario(func)">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-sm" [ngClass]="func.ativo ? 'btn-outline-danger' : 'btn-outline-success'"
+                    (click)="alternarStatus(func)">
+                    <i class="bi" [ngClass]="func.ativo ? 'bi-person-slash' : 'bi-check-circle'"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="listaFuncionarios.length === 0">
+                <td colspan="4" class="text-center py-4 text-muted">Nenhum funcionário encontrado no banco.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
+
 <div class="modal-backdrop fade show" *ngIf="modalAberto"></div>
 
 <div class="modal fade" [class.show]="modalAberto" [style.display]="modalAberto ? 'block' : 'none'" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
 
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-person-badge me-2"></i>
-                    {{ usuarioEdicao.id ? 'Editar' : 'Novo' }} {{ perfilCadastro === 'CLIENTE' ? 'Cliente' :
-                    'Funcionário' }}
-                </h5>
-                <button type="button" class="btn-close btn-close-white" (click)="fecharModal()"></button>
-            </div>
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-person-badge me-2"></i>
+          {{ usuarioEdicao.id ? 'Editar' : 'Novo' }} {{ perfilCadastro === 'CLIENTE' ? 'Cliente' : 'Funcionário' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="fecharModal()"></button>
+      </div>
 
-            <div class="modal-body p-4">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Nome Completo</label>
-                        <input type="text" class="form-control" [(ngModel)]="usuarioEdicao.nome" name="nome"
-                            placeholder="Ex: Maria Silva">
-                    </div>
+      <div class="modal-body p-4">
+        <form (submit)="$event.preventDefault()">
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Nome Completo</label>
+            <input type="text" class="form-control" [(ngModel)]="usuarioEdicao.nome" name="nome"
+              placeholder="Ex: Maria Silva">
+          </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Email</label>
-                        <input type="email" class="form-control" [(ngModel)]="usuarioEdicao.email" name="email"
-                            placeholder="email@exemplo.com">
-                    </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Email</label>
+            <input type="email" class="form-control" [(ngModel)]="usuarioEdicao.email" name="email"
+              placeholder="email@exemplo.com">
+          </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Telefone / WhatsApp</label>
-                        <input type="text" class="form-control" [(ngModel)]="usuarioEdicao.telefone" name="telefone"
-                            placeholder="(99) 99999-9999">
-                    </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Telefone / WhatsApp</label>
+            <input type="text" class="form-control" [(ngModel)]="usuarioEdicao.telefone" name="telefone"
+              placeholder="(99) 99999-9999">
+          </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Senha</label>
-                        <input type="password" class="form-control" [(ngModel)]="usuarioEdicao.senha" name="senha"
-                            placeholder="******">
-                    </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Senha</label>
+            <input type="password" class="form-control" [(ngModel)]="usuarioEdicao.senha" name="senha"
+              placeholder="******">
+          </div>
 
-                    <div class="mb-3" *ngIf="perfilCadastro === 'FUNCIONARIO'">
-                        <label class="form-label fw-bold small">Cargo</label>
-                        <select class="form-select" [(ngModel)]="usuarioEdicao.cargo" name="cargo">
-                            <option value="Gerente">Gerente</option>
-                            <option value="Esteticista">Esteticista</option>
-                            <option value="Manicure">Manicure</option>
-                            <option value="Recepcionista">Recepcionista</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
+          <div class="mb-3" *ngIf="perfilCadastro !== 'CLIENTE'">
+            <label class="form-label fw-bold small">Cargo</label>
+            <select class="form-select" [(ngModel)]="usuarioEdicao.cargo" name="cargo">
+              <option value="Gerente">Gerente</option>
+              <option value="Esteticista">Esteticista</option>
+              <option value="Manicure">Manicure</option>
+              <option value="Recepcionista">Recepcionista</option>
+            </select>
+          </div>
+        </form>
+      </div>
 
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-outline-secondary" (click)="fecharModal()">Cancelar</button>
-                <button type="button" class="btn btn-dark px-4" (click)="salvarUsuario()">
-                    {{ usuarioEdicao.id ? 'Salvar Alterações' : 'Cadastrar' }}
-                </button>
-            </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" (click)="fecharModal()">Cancelar</button>
+        <button type="button" class="btn btn-dark px-4" (click)="salvarUsuario()">
+          {{ usuarioEdicao.id ? 'Salvar Alterações' : 'Cadastrar' }}
+        </button>
+      </div>
 
-        </div>
     </div>
-</div>
+  </div>
+</div>   
